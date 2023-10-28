@@ -1,10 +1,11 @@
 package scenes
 
-type EntityManager *[][]Component
+type EntityManager []ComponentVector
 
 type Scene interface {
 	GetEntityManager() EntityManager
+	AddEntity() *ComponentVector
 	Update()
-	DoAction(action *Action)
+	DoAction(action *string)
 	Render()
 }

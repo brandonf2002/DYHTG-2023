@@ -2,10 +2,10 @@ package assets
 
 import (
 	"fmt"
+	"image/png"
 	"io"
 	"os"
 	"time"
-	"image/png"
 
 	"math/rand"
 	"strconv"
@@ -17,7 +17,7 @@ import (
 
 type AssetManager struct {
 	pictureMap map[string]pixel.Picture
-	soundMap map[string]oto.Player
+	soundMap   map[string]oto.Player
 }
 
 func LoadAssets() *AssetManager {
@@ -47,7 +47,7 @@ func loadPicture(name string, path string, am *AssetManager) {
 	am.pictureMap[name] = pixel.PictureDataFromImage(img)
 }
 
-func GetPicture(name string, am *AssetManager) pixel.Picture {
+func (am *AssetManager) GetPicture(name string) pixel.Picture {
 	return am.pictureMap[name]
 }
 
@@ -65,7 +65,7 @@ func loadSound(name string, path string, am *AssetManager) {
 	if err != nil {
 		return
 	}
-	<-ready 
+	<-ready
 
 	player := context.NewPlayer(sound)
 	am.soundMap[name] = player
@@ -77,8 +77,8 @@ func PlaySound(name string, am *AssetManager) {
 	player.(io.Seeker).Seek(0, io.SeekStart)
 	player.Play()
 	for player.IsPlaying() {
-        time.Sleep(time.Millisecond)
-    }
+		time.Sleep(time.Millisecond)
+	}
 }
 
 func PlayRandomDoorSound(am *AssetManager) {
