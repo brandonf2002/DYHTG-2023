@@ -1,15 +1,16 @@
 package main
 
 import (
+	"github.com/brandonf2002/DYHTG-2023/assets"
 	"github.com/gopxl/pixel"
 	"github.com/gopxl/pixel/pixelgl"
-	"github.com/brandonf2002/DYHTG-2023/assets"
+	"golang.org/x/image/colornames"
 )
 
 type Game = struct {
 	curScene *Scene
-	score int
-	name string
+	score    int
+	name     string
 }
 
 func newGame(name string, score int, curScene *Scene) *Game {
@@ -18,7 +19,7 @@ func newGame(name string, score int, curScene *Scene) *Game {
 }
 
 type Scene struct {
-	name string
+	name       string
 	background pixel.Picture
 }
 
@@ -39,11 +40,13 @@ func run() {
 
 	am := assets.LoadAssets()
 	s1 := newScene("Menu", assets.GetPicture("menu_background", am))
-	g := newGame("player", 0, s1)
-	sprite := pixel.NewSprite(g.curScene.background, pixel.R(0, 0, 200, 200))
+	// g := newGame("player", 0, s1)
+	sprite := pixel.NewSprite(s1.background, pixel.R(0, 0, 200, 200))
 
 	//win.Clear(colornames.Skyblue)
-	sprite.Draw(win, pixel.IM)
+
+	win.Clear(colornames.Greenyellow)
+	sprite.Draw(win, pixel.IM.Moved(win.Bounds().Center()))
 
 	for !win.Closed() {
 		win.Update()
