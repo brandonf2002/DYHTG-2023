@@ -10,7 +10,7 @@ type AssetManager struct {
 	pictureMap map[string]pixel.Picture
 }
 
-func loadAssets() *AssetManager {
+func LoadAssets() *AssetManager {
 	pictureMap := make(map[string]pixel.Picture)
 	am := AssetManager{pictureMap: pictureMap}
 	loadPicture("menu_background", "png/menu_backgound.png", &am)
@@ -28,4 +28,8 @@ func loadPicture(name string, path string, am *AssetManager) {
 		return
 	}
 	am.pictureMap[name] = pixel.PictureDataFromImage(img)
+}
+
+func GetPicture(name string, am *AssetManager) pixel.Picture {
+	return am.pictureMap[name]
 }
