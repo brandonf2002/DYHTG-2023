@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/brandonf2002/DYHTG-2023/scenes"
 	// "github.com/brandonf2002/DYHTG-2023/assets"
 	"github.com/gopxl/pixel"
@@ -27,6 +28,7 @@ func run() {
 	win.Clear(colornames.Greenyellow)
 	sprite.Draw(win, pixel.IM.Moved(win.Bounds().Center()))
 
+	oldScene := g.CurScene
 	for !win.Closed() {
 		sprite := pixel.NewSprite(g.CurScene.Background, g.CurScene.Background.Bounds())
 
@@ -59,6 +61,15 @@ func run() {
 				}
 			}
 		}
+
+
+		if g.CurScene != oldScene {
+			currentScene := g.CurScene
+			fmt.Println("Scene changed.")
+			scenes.SceneTransition(g, all_scenes)
+			g.CurScene = currentScene
+		}
+		oldScene = g.CurScene
 
 		win.Update()
 	}
