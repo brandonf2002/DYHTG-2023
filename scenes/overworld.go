@@ -24,7 +24,7 @@ func generateGreenDoor(am *assets.AssetManager) *Entity {
 	name := "green_door"
 
 	clicker := NewEntityAction(func(g *Game, sm *SceneManager) {
-		fmt.Println("Clicked!")
+		g.CurScene = GetScene("coding_challenge", sm)
 	}, MouseClick, pixelgl.MouseButtonLeft)
 
 	player := NewEntity(name, nil, pixel.R(215, 134, 331, 358), clicker)
@@ -69,6 +69,5 @@ func GenerateOverworldScene(am *assets.AssetManager) *Scene {
 	yellow_door := generateYellowDoor(am)
 	red_door := generateRedDoor(am)
 	blue_door := generateBlueDoor(am)
-	testing := generateTestClicker(am)
-	return NewScene("overworld", assets.GetPicture("overworld", am), *green_door, *yellow_door, *red_door, *blue_door, *testing)
+	return NewScene("overworld", assets.GetPicture("overworld", am), *green_door, *yellow_door, *red_door, *blue_door)
 }

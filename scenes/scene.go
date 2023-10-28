@@ -81,6 +81,7 @@ func LoadScenes() *SceneManager {
 	// sm.sceneMap["main_menu"] = NewScene("main_menu", assets.GetPicture("main_menu", am), startButton)
 	sm.sceneMap["main_menu"] = GenerateMainMenuScene(am)
 	sm.sceneMap["overworld"] = GenerateOverworldScene(am)
+	sm.sceneMap["coding_challenge"] = GenerateCodingChallengeScene(am)
 
 	return &sm
 }

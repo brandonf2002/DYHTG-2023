@@ -2,10 +2,12 @@ package assets
 
 import (
 	"fmt"
+	"image/png"
 	"io"
 	"os"
+	"path/filepath"
+	"strings"
 	"time"
-	"image/png"
 
 	"math/rand"
 	"strconv"
@@ -17,21 +19,61 @@ import (
 
 type AssetManager struct {
 	pictureMap map[string]pixel.Picture
-	soundMap map[string]oto.Player
+	soundMap   map[string]oto.Player
 }
+
+// func LoadAssets() *AssetManager {
+// 	pictureMap := make(map[string]pixel.Picture)
+// 	soundMap := make(map[string]oto.Player)
+// 	am := AssetManager{pictureMap: pictureMap, soundMap: soundMap}
+// 	loadPicture("menu_background", "./assets/png/menu_background.png", &am)
+// 	loadPicture("main_menu", "./assets/png/main_menu.png", &am)
+// 	loadPicture("overworld", "./assets/png/overworld.png", &am)
+// 	loadPicture("transition", "./assets/png/black.png", &am)
+// 	loadPicture("door_1", "./assets/png/door_1.png", &am)
+// 	loadPicture("door_1", "./assets/png/door_1.png", &am)
+// 	// loadSound("door_squeak_1", "./assets/audio/door_squeak_1.mp3", &am)
+// 	// loadSound("door_squeak_2", "./assets/audio/door_squeak_2.mp3", &am)
+// 	// loadSound("door_squeak_3", "./assets/audio/door_squeak_3.mp3", &am)
+// 	return &am
+// }
 
 func LoadAssets() *AssetManager {
 	pictureMap := make(map[string]pixel.Picture)
 	soundMap := make(map[string]oto.Player)
 	am := AssetManager{pictureMap: pictureMap, soundMap: soundMap}
-	loadPicture("menu_background", "./assets/png/menu_background.png", &am)
-	loadPicture("main_menu", "./assets/png/main_menu.png", &am)
-	loadPicture("overworld", "./assets/png/overworld.png", &am)
-	loadPicture("transition", "./assets/png/black.png", &am)
-	loadPicture("door_1", "./assets/png/door_1.png", &am)
-	// loadSound("door_squeak_1", "./assets/audio/door_squeak_1.mp3", &am)
-	// loadSound("door_squeak_2", "./assets/audio/door_squeak_2.mp3", &am)
-	// loadSound("door_squeak_3", "./assets/audio/door_squeak_3.mp3", &am)
+
+	// Define the paths for your assets
+	assetPaths := []string{"./assets/png", "./assets/audio"}
+
+	for _, path := range assetPaths {
+		files, err := os.ReadDir(path)
+		if err != nil {
+			fmt.Println("Error reading directory:", err)
+			return nil
+		}
+
+		for _, file := range files {
+			fmt.Println("Loading", path, file.Name())
+			filename := file.Name()
+			extension := filepath.Ext(filename)
+			nameWithoutExt := strings.TrimSuffix(filename, extension)
+
+			// Load pictures
+			if path == "./assets/png" {
+				loadPicture(nameWithoutExt, filepath.Join(path, filename), &am)
+			}
+
+			// Load sounds
+			if path == "./assets/audio" {
+				// Uncomment when you're ready to load sounds
+				// loadSound(nameWithoutExt, filepath.Join(path, filename), &am)
+			}
+		}
+	}
+
+	fmt.Printf("assets: %v\n", am)
+
 	return &am
 }
 
@@ -67,7 +109,7 @@ func loadSound(name string, path string, am *AssetManager) {
 	if err != nil {
 		return
 	}
-	<-ready 
+	<-ready
 
 	player := context.NewPlayer(sound)
 	am.soundMap[name] = player
@@ -79,8 +121,8 @@ func PlaySound(name string, am *AssetManager) {
 	player.(io.Seeker).Seek(0, io.SeekStart)
 	player.Play()
 	for player.IsPlaying() {
-        time.Sleep(time.Millisecond)
-    }
+		time.Sleep(time.Millisecond)
+	}
 }
 
 func PlayRandomDoorSound(am *AssetManager) {
@@ -88,3 +130,4 @@ func PlayRandomDoorSound(am *AssetManager) {
 	doorSound := "door_squeak_" + strconv.Itoa(nSound)
 	PlaySound(doorSound, am)
 }
+

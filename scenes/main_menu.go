@@ -21,5 +21,6 @@ func generateStartButton(am *assets.AssetManager) *Entity {
 func GenerateMainMenuScene(am *assets.AssetManager) *Scene {
 	testing := generateTestClicker(am)
 	start_button := generateStartButton(am)
+
 	return NewScene("main_menu", assets.GetPicture("main_menu", am), *testing, *start_button)
 }
