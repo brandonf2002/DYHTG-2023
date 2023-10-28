@@ -5,10 +5,13 @@ import (
 	"os"
 	"image/png"
 	"github.com/gopxl/pixel"
+	"github.com/hajimehoshi/oto/v2"
+	"github.com/hajimehoshi/go-mp3"
 )
 
 type AssetManager struct {
 	pictureMap map[string]pixel.Picture
+	//soundMap map[string]
 }
 
 func LoadAssets() *AssetManager {
@@ -34,4 +37,24 @@ func loadPicture(name string, path string, am *AssetManager) {
 
 func GetPicture(name string, am *AssetManager) pixel.Picture {
 	return am.pictureMap[name]
+}
+
+func LoadSound(name string, path string) {
+	file, err := os.Open(path)
+	if err != nil {
+		return
+	}
+	defer file.Close()
+	sound, err := mp3.NewDecoder(file)
+	if err != nil {
+		return
+	}
+	context, ready, err := oto.NewContext(sound.SampleRate(), 2, 2)
+	if err != nil {
+		return
+	}
+	<-ready
+
+	player := context.NewPlayer(sound)
+	player.Play()
 }

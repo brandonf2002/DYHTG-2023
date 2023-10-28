@@ -52,5 +52,6 @@ func run() {
 }
 
 func main() {
-	pixelgl.Run(run)
+	//pixelgl.Run(run)
+	assets.LoadSound("", "./assets/audio/door_squeak_1.mp3")
 }
