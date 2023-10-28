@@ -20,7 +20,7 @@ func run() {
 
 	all_scenes := scenes.LoadScenes()
 	// am := assets.LoadAssets()
-	g := scenes.NewGame("player", 0, scenes.GetScene("main_menu", all_scenes))
+	g := scenes.NewGame("player", 0, scenes.GetScene("main_menu", all_scenes), win)
 
 	sprite := pixel.NewSprite(g.CurScene.Background, g.CurScene.Background.Bounds())
 
@@ -37,7 +37,10 @@ func run() {
 		scaleY := win.Bounds().H() / g.CurScene.Background.Bounds().H()
 		sprite.Draw(win, pixel.IM.ScaledXY(pixel.ZV, pixel.V(scaleX, scaleY)).Moved(win.Bounds().Center()))
 
-		for _, sprite := range g.CurScene.InteractiveSprites {
+		// mouseX, mouseY := win.MousePosition().XY()
+		// fmt.Printf("Mouse X: %v, Mouse Y: %v\n", mouseX, mouseY)
+
+		for _, sprite := range g.CurScene.Entities {
 			for _, action := range sprite.Actions {
 				switch action.InteractionType {
 				case scenes.MouseClick:

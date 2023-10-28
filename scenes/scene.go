@@ -13,10 +13,11 @@ type Game = struct {
 	CurScene *Scene
 	Score    int
 	Name     string
+	Win      *pixelgl.Window
 }
 
-func NewGame(name string, score int, curScene *Scene) *Game {
-	g := Game{Name: name, Score: score, CurScene: curScene}
+func NewGame(name string, score int, curScene *Scene, win *pixelgl.Window) *Game {
+	g := Game{Name: name, Score: score, CurScene: curScene, Win: win}
 	return &g
 }
 
@@ -29,9 +30,9 @@ const (
 )
 
 type Scene struct {
-	Name               string
-	Background         pixel.Picture
-	InteractiveSprites []Entity
+	Name       string
+	Background pixel.Picture
+	Entities   []Entity
 }
 
 type EntityAction struct {
@@ -50,9 +51,6 @@ type Entity struct {
 	Sprite  *pixel.Sprite
 	Rect    pixel.Rect
 	Actions []EntityAction
-	// Action          func(*Game, *SceneManager)
-	// InteractionType InteractionType
-	// Key             pixelgl.Button // for KeyPress InteractionType
 }
 
 func NewEntity(sprite *pixel.Sprite, rect pixel.Rect, actions ...EntityAction) Entity {
@@ -65,12 +63,12 @@ type SceneManager struct {
 }
 
 func NewScene(name string, background pixel.Picture, sprites ...Entity) *Scene {
-	s := Scene{Name: name, Background: background, InteractiveSprites: sprites}
+	s := Scene{Name: name, Background: background, Entities: sprites}
 	return &s
 }
 
 func GetEntity(scene *Scene, name string) *Entity {
-	for _, entity := range scene.InteractiveSprites {
+	for _, entity := range scene.Entities {
 		if entity.Name == name {
 			return &entity
 		}
@@ -91,16 +89,8 @@ func LoadScenes() *SceneManager {
 		Actions: []EntityAction{start_action},
 	}
 
-	// playerSprite := Entity{
-	// 	Sprite:          nil,
-	// 	Rect:            pixel.R(100, 100, 150, 150),
-	// 	Action:          func(*Game, *SceneManager) {},
-	// 	InteractionType: KeyPress,
-	// 	Key:             pixelgl.KeyW,
-	// }
-
 	sm.sceneMap["main_menu"] = NewScene("main_menu", assets.GetPicture("main_menu", am), startButton)
-	sm.sceneMap["overworld"] = NewScene("overworld", assets.GetPicture("overworld", am), startButton)
+	sm.sceneMap["overworld"] = GenerateOverworldScene(am)
 
 	return &sm
 }

@@ -1,32 +1,46 @@
 package scenes
 
 import (
+	"fmt"
+
 	"github.com/brandonf2002/DYHTG-2023/assets"
 	"github.com/gopxl/pixel"
+	"github.com/gopxl/pixel/pixelgl"
 )
 
-func generatePlayerEntity(am *assets.AssetManager) *Entity {
-	name := "player"
+func generateTestClicker(am *assets.AssetManager) *Entity {
+	name := "testing"
 
-	// aMoveLeft := NewEntityAction(func(g *Game, sm *SceneManager) {
-	// 	entity := GetEntity(g.CurScene, name)
-	// 	entity.Rect = entity.Rect.Moved(pixel.V(-10, 0))
-	// }, KeyPress, pixelgl.KeyLeft)
+	clikcer := NewEntityAction(func(g *Game, sm *SceneManager) {
+		mouseX, mouseY := g.Win.MousePosition().XY()
+		fmt.Printf("Mouse X: %v, Mouse Y: %v\n", mouseX, mouseY)
+	}, MouseClick, pixelgl.MouseButtonLeft)
 
-	// aMoveRight := NewEntityAction(func(g *Game, sm *SceneManager) {
-	// 	entity := GetEntity(g.CurScene, name)
-	// 	entity.Rect = entity.Rect.Moved(pixel.V(10, 0))
-	// }, KeyPress, pixelgl.KeyRight)
-
-	pic := assets.GetPicture("player", am)
-	sprite := pixel.NewSprite(pic, pic.Bounds())
 	player := Entity{
-		Name:    name,
-		Sprite:  sprite,
-		Rect:    pixel.R(100, 100, 150, 150),
+		Name:   name,
+		Sprite: nil,
+		Rect:   pixel.R(0, 0, 1024, 1024),
 		Actions: []EntityAction{
-			// aMoveLeft,
-			// aMoveRight,
+			clikcer,
+		},
+	}
+
+	return &player
+}
+
+func generatePlayerEntity(am *assets.AssetManager) *Entity {
+	name := "player10"
+
+	clikcer := NewEntityAction(func(g *Game, sm *SceneManager) {
+		fmt.Println("Clicked!")
+	}, MouseClick, pixelgl.MouseButtonLeft)
+
+	player := Entity{
+		Name:   name,
+		Sprite: nil,
+		Rect:   pixel.R(215, 134, 331, 358),
+		Actions: []EntityAction{
+			clikcer,
 		},
 	}
 
@@ -34,13 +48,7 @@ func generatePlayerEntity(am *assets.AssetManager) *Entity {
 }
 
 func GenerateOverworldScene(am *assets.AssetManager) *Scene {
-	playerSprite := Entity{
-		Sprite: nil,
-		Rect:   pixel.R(100, 100, 150, 150),
-		// Action:          func(*Game, *SceneManager) {},
-		// InteractionType: KeyPress,
-		// Key:             pixelgl.KeyW,
-	}
-
-	return NewScene("overworld", assets.GetPicture("overworld", am), playerSprite)
+	playerSprite := generatePlayerEntity(am)
+	testing := generateTestClicker(am)
+	return NewScene("overworld", assets.GetPicture("overworld", am), *playerSprite, *testing)
 }
