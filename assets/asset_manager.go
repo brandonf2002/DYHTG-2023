@@ -2,9 +2,15 @@ package assets
 
 import (
 	"fmt"
+	"fmt"
+	"image"
+	"os"
+
+	_ "image/png"
+
 	"github.com/gopxl/pixel"
 	"os"
-	"image/png"
+	"image"
 )
 
 type AssetManager struct {
@@ -18,16 +24,14 @@ func LoadAssets() *AssetManager {
 	return &am
 }
 
-func loadPicture(name string, path string, am *AssetManager) {
+func LoadPicture(name string, path string, am *AssetManager) {
 	file, err := os.Open(path)
 	if err != nil {
-		fmt.Printf("failed to load %s: %s\n", path, err)
 		return
 	}
 	defer file.Close()
 	img, err := png.Decode(file)
 	if err != nil {
-		fmt.Printf("failed to decode %s: %s\n", path, err)
 		return
 	}
 	fmt.Printf("%s loaded successfully\n", path)
