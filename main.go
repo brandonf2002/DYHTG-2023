@@ -38,22 +38,24 @@ func run() {
 		sprite.Draw(win, pixel.IM.ScaledXY(pixel.ZV, pixel.V(scaleX, scaleY)).Moved(win.Bounds().Center()))
 
 		for _, sprite := range g.CurScene.InteractiveSprites {
-			switch sprite.InteractionType {
-			case scenes.MouseClick:
-				if win.JustPressed(pixelgl.MouseButtonLeft) && sprite.Rect.Contains(win.MousePosition()) {
-					sprite.Action(g, all_scenes)
+			for _, action := range sprite.Actions {
+				switch action.InteractionType {
+				case scenes.MouseClick:
+					if win.JustPressed(pixelgl.MouseButtonLeft) && sprite.Rect.Contains(win.MousePosition()) {
+						action.Action(g, all_scenes)
+					}
+				case scenes.KeyPress:
+					if win.JustPressed(action.Key) {
+						action.Action(g, all_scenes)
+					}
+					// case scenes.BoundingBox:
+					// 	// Check if any other sprite's bounding box intersects with this sprite's bounding box
+					// 	for _, otherSprite := range currentScene.InteractiveSprites {
+					// 		if sprite != otherSprite && sprite.Rect.Intersect(otherSprite.Rect) != pixel.ZR {
+					// 			sprite.Action()
+					// 		}
+					// 	}
 				}
-			case scenes.KeyPress:
-				if win.JustPressed(sprite.Key) {
-					sprite.Action(g, all_scenes)
-				}
-				// case scenes.BoundingBox:
-				// 	// Check if any other sprite's bounding box intersects with this sprite's bounding box
-				// 	for _, otherSprite := range currentScene.InteractiveSprites {
-				// 		if sprite != otherSprite && sprite.Rect.Intersect(otherSprite.Rect) != pixel.ZR {
-				// 			sprite.Action()
-				// 		}
-				// 	}
 			}
 		}
 
