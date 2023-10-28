@@ -30,8 +30,6 @@ func run() {
 	for !win.Closed() {
 		sprite := pixel.NewSprite(g.CurScene.Background, g.CurScene.Background.Bounds())
 
-		win.Clear(colornames.Greenyellow)
-
 		// Adjust the sprite matrix to scale according to the window size (Might delete)
 		scaleX := win.Bounds().W() / g.CurScene.Background.Bounds().W()
 		scaleY := win.Bounds().H() / g.CurScene.Background.Bounds().H()
