@@ -59,7 +59,7 @@ func run() {
 				}
 			}
 
-			sprite.Sprite.Draw(win, pixel.IM.Moved(sprite.Rect.Center()))
+			// sprite.Sprite.Draw(win, pixel.IM.Moved(sprite.Rect.Center()))
 		}
 
 		win.Update()
