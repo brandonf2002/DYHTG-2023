@@ -6,6 +6,6 @@ type Scene interface {
 	GetEntityManager() EntityManager
 	AddEntity() *ComponentVector
 	Update()
-	DoAction(action *string)
+	DoAction(action Action)
 	Render()
 }

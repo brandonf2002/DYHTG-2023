@@ -12,6 +12,7 @@ type Game struct {
 	scenes   SceneManager
 	Assets   *assets.AssetManager
 	Window   *pixelgl.Window
+	running  bool
 }
 
 func NewGame(window *pixelgl.Window) *Game {
@@ -20,23 +21,36 @@ func NewGame(window *pixelgl.Window) *Game {
 		scenes:   make(map[string]Scene),
 		Assets:   assets.LoadAssets(),
 		Window:   window,
+		running:  true,
 	}
 	g.ChangeScene("MENU", NewSceneMainMenu(&g))
 	return &g
 }
 
 func (g *Game) Run() {
-	for !g.Window.Closed() {
+	for !g.Window.Closed() && g.running {
 		g.Update()
 	}
+}
+
+func (g *Game) Quit() {
+	g.running = false
 }
 
 func (g *Game) Update() {
 	scene, ok := g.GetCurrentScene()
 	if ok {
+		g.sUserInput()
 		scene.Update()
 	}
 	g.Window.Update()
+}
+
+func (g *Game) sUserInput() {
+	scene, _ := g.GetCurrentScene()
+	if g.Window.JustPressed(pixelgl.MouseButtonLeft) {
+		scene.DoAction(NewAction("LEFT_MOUSE", g.Window.MousePosition()))
+	}
 }
 
 func (g *Game) ChangeScene(name string, scene Scene) {

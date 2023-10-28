@@ -53,11 +53,21 @@ func (smm *SceneMainMenu) Render() {
 
 	for _, entity := range smm.entityManager {
 		if (CBoundingBox{}) != entity.BoundingBox && (CSprite{}) != entity.Sprite {
-			entity.Sprite.Sprite.Draw(smm.game.Window, pixel.IM.Moved(pixel.V(float64(entity.BoundingBox.X), float64(entity.BoundingBox.Y))))
+			entity.Sprite.Sprite.Draw(smm.game.Window, pixel.IM.Moved(entity.BoundingBox.Center()))
 		}
 	}
 }
 
-func (smm *SceneMainMenu) DoAction(action *string) {
-
+func (smm *SceneMainMenu) DoAction(action Action) {
+	if action.Name == "LEFT_MOUSE" {
+		if smm.entityManager[0].BoundingBox.Inside(action.Coords) {
+			smm.game.ChangeScene("OVERWORLD", nil)
+		}
+		if smm.entityManager[1].BoundingBox.Inside(action.Coords) {
+			smm.game.ChangeScene("OPTIONS", nil)
+		}
+		if smm.entityManager[2].BoundingBox.Inside(action.Coords) {
+			smm.game.Quit()
+		}
+	}
 }

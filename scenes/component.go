@@ -8,15 +8,22 @@ type ComponentVector struct {
 }
 
 type CBoundingBox struct {
-	X      int
-	Y      int
-	Width  int
-	Height int
+	X      float64
+	Y      float64
+	Width  float64
+	Height float64
 }
 
-func NewCBoundingBox(x int, y int, width int, height int) CBoundingBox {
-	bb := CBoundingBox{X: x, Y: y, Width: width, Height: height}
-	return bb
+func NewCBoundingBox(x float64, y float64, width float64, height float64) CBoundingBox {
+	return CBoundingBox{X: x, Y: y, Width: width, Height: height}
+}
+
+func (bb CBoundingBox) Center() pixel.Vec {
+	return pixel.V(bb.X+bb.Width/2, bb.Y+bb.Height/2)
+}
+
+func (bb CBoundingBox) Inside(v pixel.Vec) bool {
+	return bb.X <= v.X && v.X <= bb.X+bb.Width && bb.Y <= v.Y && v.Y <= bb.Y+bb.Height
 }
 
 type CSprite struct {
@@ -24,6 +31,5 @@ type CSprite struct {
 }
 
 func NewCSprite(sprite *pixel.Sprite) CSprite {
-	s := CSprite{Sprite: sprite}
-	return s
+	return CSprite{Sprite: sprite}
 }
