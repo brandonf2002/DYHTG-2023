@@ -58,11 +58,6 @@ func NewEntity(sprite *pixel.Sprite, rect pixel.Rect, actions ...EntityAction) E
 	return e
 }
 
-type DoorSprite struct {
-	InteractiveSprite InteractiveSprite
-	Destination       *Scene
-}
-
 type SceneManager struct {
 	sceneMap map[string]*Scene
 }
@@ -72,19 +67,6 @@ func NewScene(name string, background pixel.Picture, sprites ...Entity) *Scene {
 	return &s
 }
 
-<<<<<<< HEAD
-func newDoorSprite(Sprite *pixel.Sprite, Rect pixel.Rect, Destination *Scene) *DoorSprite {
-	d := DoorSprite{
-		InteractiveSprite: InteractiveSprite{
-			Sprite: Sprite,
-			Rect: Rect,
-			Action: func(*Game, *SceneManager) {},
-			InteractionType: MouseClick,
-		},
-		Destination: Destination,
-	}
-	return &d
-=======
 func GetEntity(scene *Scene, name string) *Entity {
 	for _, entity := range scene.Entities {
 		if entity.Name == name {
@@ -92,7 +74,6 @@ func GetEntity(scene *Scene, name string) *Entity {
 		}
 	}
 	return nil
->>>>>>> 13c3053ad04c317560e6fd14fd71deae8e6df5f5
 }
 
 func LoadScenes() *SceneManager {
@@ -108,30 +89,8 @@ func LoadScenes() *SceneManager {
 		Actions: []EntityAction{start_action},
 	}
 
-<<<<<<< HEAD
-	playerSprite := InteractiveSprite{
-		Sprite:          nil,
-		Rect:            pixel.R(100, 100, 150, 150),
-		Action:          func(*Game, *SceneManager) {},
-		InteractionType: KeyPress,
-		Key:             pixelgl.KeyW,
-	}
-
-	door1 := DoorSprite {
-		InteractiveSprite: InteractiveSprite{
-			Sprite: nil, 
-			Rect: pixel.R(364, 290, 700, 380),
-			Action: func(*Game, *SceneManager) {},
-		}
-	}
-
-	sm.sceneMap["main_menu"] = NewScene("main_menu", assets.GetPicture("main_menu", am), startButton, playerSprite)
-	sm.sceneMap["overworld"] = NewScene("overworld", assets.GetPicture("overworld", am), door1, playerSprite)
-	sm.sceneMap["transition"] = NewScene("transition", assets.GetPicture("transition", am), door1, playerSprite)
-=======
 	sm.sceneMap["main_menu"] = NewScene("main_menu", assets.GetPicture("main_menu", am), startButton)
 	sm.sceneMap["overworld"] = GenerateOverworldScene(am)
->>>>>>> 13c3053ad04c317560e6fd14fd71deae8e6df5f5
 
 	return &sm
 }
