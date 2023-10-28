@@ -27,6 +27,8 @@ func LoadAssets() *AssetManager {
 	loadPicture("menu_background", "./assets/png/menu_background.png", &am)
 	loadPicture("main_menu", "./assets/png/main_menu.png", &am)
 	loadPicture("overworld", "./assets/png/overworld.png", &am)
+	loadPicture("transition", "./assets/png/black.png", &am)
+	loadPicture("door_1", "./assets/png/door_1.png", &am)
 	// loadSound("door_squeak_1", "./assets/audio/door_squeak_1.mp3", &am)
 	// loadSound("door_squeak_2", "./assets/audio/door_squeak_2.mp3", &am)
 	// loadSound("door_squeak_3", "./assets/audio/door_squeak_3.mp3", &am)

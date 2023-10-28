@@ -42,6 +42,11 @@ type InteractiveSprite struct {
 	Key             pixelgl.Button // for KeyPress InteractionType
 }
 
+type DoorSprite struct {
+	InteractiveSprite InteractiveSprite
+	Destination       *Scene
+}
+
 type SceneManager struct {
 	sceneMap map[string]*Scene
 }
@@ -49,6 +54,19 @@ type SceneManager struct {
 func NewScene(name string, background pixel.Picture, sprites ...InteractiveSprite) *Scene {
 	s := Scene{Name: name, Background: background, InteractiveSprites: sprites}
 	return &s
+}
+
+func newDoorSprite(Sprite *pixel.Sprite, Rect pixel.Rect, Destination *Scene) *DoorSprite {
+	d := DoorSprite{
+		InteractiveSprite: InteractiveSprite{
+			Sprite: Sprite,
+			Rect: Rect,
+			Action: func(*Game, *SceneManager) {},
+			InteractionType: MouseClick,
+		},
+		Destination: Destination,
+	}
+	return &d
 }
 
 func LoadScenes() *SceneManager {
@@ -70,8 +88,17 @@ func LoadScenes() *SceneManager {
 		Key:             pixelgl.KeyW,
 	}
 
+	door1 := DoorSprite {
+		InteractiveSprite: InteractiveSprite{
+			Sprite: nil, 
+			Rect: pixel.R(364, 290, 700, 380),
+			Action: func(*Game, *SceneManager) {},
+		}
+	}
+
 	sm.sceneMap["main_menu"] = NewScene("main_menu", assets.GetPicture("main_menu", am), startButton, playerSprite)
-	sm.sceneMap["overworld"] = NewScene("overworld", assets.GetPicture("overworld", am), startButton, playerSprite)
+	sm.sceneMap["overworld"] = NewScene("overworld", assets.GetPicture("overworld", am), door1, playerSprite)
+	sm.sceneMap["transition"] = NewScene("transition", assets.GetPicture("transition", am), door1, playerSprite)
 
 	return &sm
 }
