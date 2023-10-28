@@ -17,11 +17,11 @@ type AssetManager struct {
 func LoadAssets() *AssetManager {
 	pictureMap := make(map[string]pixel.Picture)
 	am := AssetManager{pictureMap: pictureMap}
-	loadPicture("menu_background", "./assets/png/menu_background.png", &am)
+	LoadPicture("menu_background", "./assets/png/menu_background.png", &am)
 	return &am
 }
 
-func loadPicture(name string, path string, am *AssetManager) {
+func LoadPicture(name string, path string, am *AssetManager) {
 	file, err := os.Open(path)
 	if err != nil {
 		fmt.Printf("%s\n", err.Error())
