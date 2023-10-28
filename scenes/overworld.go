@@ -28,8 +28,8 @@ func generateTestClicker(am *assets.AssetManager) *Entity {
 	return &player
 }
 
-func generatePlayerEntity(am *assets.AssetManager) *Entity {
-	name := "player10"
+func generateGreenDoor(am *assets.AssetManager) *Entity {
+	name := "green_door"
 
 	clikcer := NewEntityAction(func(g *Game, sm *SceneManager) {
 		fmt.Println("Clicked!")
@@ -46,9 +46,66 @@ func generatePlayerEntity(am *assets.AssetManager) *Entity {
 
 	return &player
 }
+func generateYellowDoor(am *assets.AssetManager) *Entity {
+	name := "yellow_door"
+
+	clikcer := NewEntityAction(func(g *Game, sm *SceneManager) {
+		fmt.Println("Clicked the yellow door")
+	}, MouseClick, pixelgl.MouseButtonLeft)
+
+	player := Entity{
+		Name:   name,
+		Sprite: nil,
+		Rect:   pixel.R(22, 130, 135, 363),
+		Actions: []EntityAction{
+			clikcer,
+		},
+	}
+
+	return &player
+}
+func generateRedDoor(am *assets.AssetManager) *Entity {
+	name := "red_door"
+
+	clikcer := NewEntityAction(func(g *Game, sm *SceneManager) {
+		fmt.Println("Clicked! The red door")
+	}, MouseClick, pixelgl.MouseButtonLeft)
+
+	player := Entity{
+		Name:   name,
+		Sprite: nil,
+		Rect:   pixel.R(696, 131, 819, 363),
+		Actions: []EntityAction{
+			clikcer,
+		},
+	}
+
+	return &player
+}
+func generateBlueDoor(am *assets.AssetManager) *Entity {
+	name := "blue_door"
+
+	clikcer := NewEntityAction(func(g *Game, sm *SceneManager) {
+		fmt.Println("Clicked the blue door")
+	}, MouseClick, pixelgl.MouseButtonLeft)
+
+	player := Entity{
+		Name:   name,
+		Sprite: nil,
+		Rect:   pixel.R(898, 132, 1012, 356),
+		Actions: []EntityAction{
+			clikcer,
+		},
+	}
+
+	return &player
+}
 
 func GenerateOverworldScene(am *assets.AssetManager) *Scene {
-	playerSprite := generatePlayerEntity(am)
+	green_door := generateGreenDoor(am)
+	yellow_door := generateYellowDoor(am)
+	red_door := generateRedDoor(am)
+	blue_door := generateBlueDoor(am)
 	testing := generateTestClicker(am)
-	return NewScene("overworld", assets.GetPicture("overworld", am), *playerSprite, *testing)
+	return NewScene("overworld", assets.GetPicture("overworld", am), *green_door, *yellow_door, *red_door, *blue_door, *testing)
 }
