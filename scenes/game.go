@@ -51,6 +51,9 @@ func (g *Game) sUserInput() {
 	if g.Window.JustPressed(pixelgl.MouseButtonLeft) {
 		scene.DoAction(NewAction("LEFT_MOUSE", g.Window.MousePosition()))
 	}
+	if g.Window.JustPressed(pixelgl.KeyEscape) {
+		scene.DoAction(NewAction("ESC", g.Window.MousePosition()))
+	}
 }
 
 func (g *Game) ChangeScene(name string, scene Scene) {

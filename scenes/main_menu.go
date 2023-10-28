@@ -16,16 +16,16 @@ func NewSceneMainMenu(game *Game) *SceneMainMenu {
 	smm.entityManager = make([]ComponentVector, 64)
 
 	startButton := smm.AddEntity()
-	startButton.BoundingBox = NewCBoundingBox(0, 0, 200, 50)
-	startButton.Sprite = NewCSprite(pixel.NewSprite(game.Assets.GetPicture("main_menu"), pixel.R(300, 300, 500, 350)))
+	startButton.BoundingBox = NewCBoundingBox(364-125, 290, 700-125, 380)
+	startButton.Sprite = NewCSprite(pixel.NewSprite(game.Assets.GetPicture("main_menu"), pixel.R(364, 290, 700, 380)))
 
 	optionsButton := smm.AddEntity()
-	optionsButton.BoundingBox = NewCBoundingBox(0, 50, 200, 50)
-	optionsButton.Sprite = NewCSprite(pixel.NewSprite(game.Assets.GetPicture("main_menu"), pixel.R(300, 200, 500, 250)))
+	optionsButton.BoundingBox = NewCBoundingBox(364-125, 290-125, 700-125, 380-125)
+	optionsButton.Sprite = NewCSprite(pixel.NewSprite(game.Assets.GetPicture("main_menu"), pixel.R(364, 290-125, 700, 380-125)))
 
 	quitButton := smm.AddEntity()
-	quitButton.BoundingBox = NewCBoundingBox(0, 100, 200, 50)
-	quitButton.Sprite = NewCSprite(pixel.NewSprite(game.Assets.GetPicture("main_menu"), pixel.R(300, 250, 500, 300)))
+	quitButton.BoundingBox = NewCBoundingBox(364-125, 290-250, 700-125, 380-250)
+	quitButton.Sprite = NewCSprite(pixel.NewSprite(game.Assets.GetPicture("main_menu"), pixel.R(364, 290-250, 700, 380-250)))
 
 	return &smm
 }
@@ -61,10 +61,10 @@ func (smm *SceneMainMenu) Render() {
 func (smm *SceneMainMenu) DoAction(action Action) {
 	if action.Name == "LEFT_MOUSE" {
 		if smm.entityManager[0].BoundingBox.Inside(action.Coords) {
-			smm.game.ChangeScene("OVERWORLD", nil)
+			smm.game.ChangeScene("OVERWORLD", NewSceneOverworld(smm.game))
 		}
 		if smm.entityManager[1].BoundingBox.Inside(action.Coords) {
-			smm.game.ChangeScene("OPTIONS", nil)
+			smm.game.ChangeScene("OPTIONS", NewSceneOptions(smm.game))
 		}
 		if smm.entityManager[2].BoundingBox.Inside(action.Coords) {
 			smm.game.Quit()
