@@ -1,32 +1,39 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/brandonf2002/DYHTG-2023/assets"
+	"github.com/brandonf2002/DYHTG-2023/scenes"
+
 	"github.com/gopxl/pixel"
 	"github.com/gopxl/pixel/pixelgl"
 	"golang.org/x/image/colornames"
 )
 
 type Game = struct {
-	curScene *Scene
+	curScene *scenes.Scene
 	score    int
 	name     string
 }
 
-func newGame(name string, score int, curScene *Scene) *Game {
+func newGame(name string, score int, curScene *scenes.Scene) *Game {
 	g := Game{name: name, score: score, curScene: curScene}
 	return &g
 }
 
-type Scene struct {
-	name       string
-	background pixel.Picture
-}
+// type Scene struct {
+// 	name       string
+// 	background pixel.Picture
+// }
 
-func newScene(name string, background pixel.Picture) *Scene {
-	s := Scene{name: name, background: background}
-	return &s
-}
+// Notes:
+// The start button is from (360, 640) and (700, 740)
+
+// func newScene(name string, background pixel.Picture) *scenes.Scene {
+// 	s := scenes.Scene{name: name, background: background}
+// 	return &s
+// }
 
 func run() {
 	cfg := pixelgl.WindowConfig{
@@ -38,30 +45,53 @@ func run() {
 		panic(err)
 	}
 
-	am := assets.LoadAssets()
-	s1 := newScene("Menu", assets.GetPicture("main_menu", am))
-	g := newGame("player", 0, s1)
-	sprite := pixel.NewSprite(g.curScene.background, g.curScene.background.Bounds())
+	all_scenes := scenes.LoadScenes()
+	// am := assets.LoadAssets()
+	g := newGame("player", 0, scenes.GetScene("main_menu", all_scenes))
+
+	sprite := pixel.NewSprite(g.curScene.Background, g.curScene.Background.Bounds())
 
 	win.Clear(colornames.Greenyellow)
 	sprite.Draw(win, pixel.IM.Moved(win.Bounds().Center()))
 
 	for !win.Closed() {
+		// mouseX, mouseY := win.MousePosition().XY()
+		// fmt.Printf("Mouse X: %v, Mouse Y: %v\n", mouseX, mouseY)
 		win.Clear(colornames.Greenyellow)
 
-		// Adjust the sprite matrix to scale according to the window size
-		scaleX := win.Bounds().W() / g.curScene.background.Bounds().W()
-		scaleY := win.Bounds().H() / g.curScene.background.Bounds().H()
+		// Adjust the sprite matrix to scale according to the window size (Might delete)
+		scaleX := win.Bounds().W() / g.curScene.Background.Bounds().W()
+		scaleY := win.Bounds().H() / g.curScene.Background.Bounds().H()
 		sprite.Draw(win, pixel.IM.ScaledXY(pixel.ZV, pixel.V(scaleX, scaleY)).Moved(win.Bounds().Center()))
+
+		for _, sprite := range g.curScene.InteractiveSprites {
+			switch sprite.InteractionType {
+			case scenes.MouseClick:
+				// println("Mouse Clicked %b, ", win.JustPressed(pixelgl.MouseButtonLeft))
+				// println("Mouse in rect %b, ", sprite.Rect.Contains(win.MousePosition()))
+				if win.JustPressed(pixelgl.MouseButtonLeft) && sprite.Rect.Contains(win.MousePosition()) {
+					sprite.Action()
+				}
+			case scenes.KeyPress:
+				if win.JustPressed(sprite.Key) {
+					sprite.Action()
+				}
+				// case scenes.BoundingBox:
+				// 	// Check if any other sprite's bounding box intersects with this sprite's bounding box
+				// 	for _, otherSprite := range currentScene.InteractiveSprites {
+				// 		if sprite != otherSprite && sprite.Rect.Intersect(otherSprite.Rect) != pixel.ZR {
+				// 			sprite.Action()
+				// 		}
+				// 	}
+			}
+		}
 
 		win.Update()
 	}
-	// for !win.Closed() {
-	// 	win.Update()
-	// }
 }
 
 func main() {
-	//pixelgl.Run(run)
+	pixelgl.Run(run)
+	fmt.Println("Hello, World!")
 	assets.LoadSound("", "./assets/audio/door_squeak_1.mp3")
 }

@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/gopxl/pixel"
-	"github.com/hajimehoshi/oto/v2"
 	"github.com/hajimehoshi/go-mp3"
+	"github.com/hajimehoshi/oto/v2"
 )
 
 type AssetManager struct {
@@ -61,3 +61,4 @@ func LoadSound(name string, path string) {
 	player := context.NewPlayer(sound)
 	player.Play()
 }
+
