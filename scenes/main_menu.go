@@ -15,7 +15,6 @@ func generateStartButton(am *assets.AssetManager) *Entity {
 	}, MouseClick, pixelgl.MouseButtonLeft)
 
 	player := NewEntity(name, nil, pixel.R(364, 290, 700, 380), clicker)
-
 	return &player
 }
 
