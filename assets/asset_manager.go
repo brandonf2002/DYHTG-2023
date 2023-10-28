@@ -5,6 +5,8 @@ import (
 	"os"
 	"time"
 	"image/png"
+	"os"
+
 	"github.com/gopxl/pixel"
 	"github.com/hajimehoshi/oto/v2"
 	"github.com/hajimehoshi/go-mp3"
@@ -20,6 +22,8 @@ func LoadAssets() *AssetManager {
 	soundMap := make(map[string]oto.Player)
 	am := AssetManager{pictureMap: pictureMap, soundMap: soundMap}
 	loadPicture("menu_background", "./assets/png/menu_background.png", &am)
+	loadPicture("main_menu", "./assets/png/main_menu.png", &am)
+	loadPicture("overworld", "./assets/png/overworld.png", &am)
 	loadSound("door_squeak_1", "./assets/audio/door_squeak_1.mp3", &am)
 	loadSound("door_squeak_2", "./assets/audio/door_squeak_2.mp3", &am)
 	return &am
