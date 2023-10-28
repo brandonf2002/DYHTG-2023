@@ -1,8 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"github.com/brandonf2002/DYHTG-2023/scenes"
-	// "github.com/brandonf2002/DYHTG-2023/assets"
+	"github.com/brandonf2002/DYHTG-2023/assets"
 	"github.com/gopxl/pixel"
 	"github.com/gopxl/pixel/pixelgl"
 	"golang.org/x/image/colornames"
@@ -18,7 +19,8 @@ func run() {
 		panic(err)
 	}
 
-	all_scenes := scenes.LoadScenes()
+	all_assets := assets.LoadAssets()
+	all_scenes := scenes.LoadScenes(all_assets)
 	// am := assets.LoadAssets()
 	g := scenes.NewGame("player", 0, scenes.GetScene("main_menu", all_scenes), win)
 
@@ -27,6 +29,7 @@ func run() {
 	win.Clear(colornames.Greenyellow)
 	sprite.Draw(win, pixel.IM.Moved(win.Bounds().Center()))
 
+	oldScene := g.CurScene
 	for !win.Closed() {
 		sprite := pixel.NewSprite(g.CurScene.Background, g.CurScene.Background.Bounds())
 
@@ -61,6 +64,15 @@ func run() {
 
 			// sprite.Sprite.Draw(win, pixel.IM.Moved(sprite.Rect.Center()))
 		}
+
+
+		if g.CurScene != oldScene {
+			currentScene := g.CurScene
+			fmt.Println("Scene changed.")
+			scenes.SceneTransition(g, all_scenes, all_assets)
+			g.CurScene = currentScene
+		}
+		oldScene = g.CurScene
 
 		win.Update()
 	}
