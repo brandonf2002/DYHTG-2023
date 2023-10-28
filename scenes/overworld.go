@@ -46,6 +46,7 @@ func generateGreenDoor(am *assets.AssetManager) *Entity {
 
 	return &player
 }
+
 func generateYellowDoor(am *assets.AssetManager) *Entity {
 	name := "yellow_door"
 
@@ -64,6 +65,7 @@ func generateYellowDoor(am *assets.AssetManager) *Entity {
 
 	return &player
 }
+
 func generateRedDoor(am *assets.AssetManager) *Entity {
 	name := "red_door"
 
@@ -82,6 +84,7 @@ func generateRedDoor(am *assets.AssetManager) *Entity {
 
 	return &player
 }
+
 func generateBlueDoor(am *assets.AssetManager) *Entity {
 	name := "blue_door"
 
