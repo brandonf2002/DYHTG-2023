@@ -1,6 +1,8 @@
 package scenes
 
 import (
+	"time"
+
 	"github.com/brandonf2002/DYHTG-2023/assets"
 	"github.com/gopxl/pixel/pixelgl"
 )
@@ -29,7 +31,9 @@ func NewGame(window *pixelgl.Window) *Game {
 
 func (g *Game) Run() {
 	for !g.Window.Closed() && g.running {
+		start := time.Now()
 		g.Update()
+		time.Sleep(time.Second/60 - time.Since(start))
 	}
 }
 

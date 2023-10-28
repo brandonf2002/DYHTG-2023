@@ -5,6 +5,8 @@ import "github.com/gopxl/pixel"
 type ComponentVector struct {
 	BoundingBox CBoundingBox
 	Sprite      CSprite
+	Animation   []CAnimation
+	LifeSpan    CLifeSpan
 }
 
 type CBoundingBox struct {
@@ -32,4 +34,26 @@ type CSprite struct {
 
 func NewCSprite(sprite *pixel.Sprite) CSprite {
 	return CSprite{Sprite: sprite}
+}
+
+type CAnimation struct {
+	DeltaScaleX  float64
+	DeltaScaleY  float64
+	DeltaX       float64
+	DeltaY       float64
+	DeltaRot     float64
+	CurrentFrame int
+	NumOfFrames  int
+}
+
+func NewCAnimation(deltaScaleX float64, deltaScaleY float64, deltaX float64, deltaY float64, deltaRot float64, currentFrame int, numOfFrames int) CAnimation {
+	return CAnimation{DeltaScaleX: deltaScaleX, DeltaScaleY: deltaScaleY, DeltaX: deltaX, DeltaY: deltaY, DeltaRot: deltaRot, CurrentFrame: currentFrame, NumOfFrames: numOfFrames}
+}
+
+type CLifeSpan struct {
+	NumOfFrames int
+}
+
+func NewCLifeSpan(numOfFrames int) CLifeSpan {
+	return CLifeSpan{NumOfFrames: numOfFrames}
 }
