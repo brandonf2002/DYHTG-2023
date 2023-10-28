@@ -74,9 +74,8 @@ type SceneManager struct {
 	sceneMap map[string]*Scene
 }
 
-func LoadScenes() *SceneManager {
+func LoadScenes(am *assets.AssetManager) *SceneManager {
 	sm := SceneManager{sceneMap: make(map[string]*Scene)}
-	am := assets.LoadAssets()
 
 	// sm.sceneMap["main_menu"] = NewScene("main_menu", assets.GetPicture("main_menu", am), startButton)
 	sm.sceneMap["main_menu"] = GenerateMainMenuScene(am)
