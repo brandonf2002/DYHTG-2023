@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/brandonf2002/DYHTG-2023/scenes"
-	"github.com/brandonf2002/DYHTG-2023/assets"
+	// "github.com/brandonf2002/DYHTG-2023/assets"
 	"github.com/gopxl/pixel"
 	"github.com/gopxl/pixel/pixelgl"
 	"golang.org/x/image/colornames"
@@ -62,7 +62,7 @@ func run() {
 }
 
 func main() {
-	//pixelgl.Run(run)
-	am := assets.LoadAssets()
-	assets.PlayRandomDoorSound(am)
+	pixelgl.Run(run)
+	// am := assets.LoadAssets()
+	// assets.PlayRandomDoorSound(am)
 }
