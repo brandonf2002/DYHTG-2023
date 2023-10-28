@@ -93,5 +93,7 @@ func run() {
 func main() {
 	pixelgl.Run(run)
 	fmt.Println("Hello, World!")
-	assets.LoadSound("", "./assets/audio/door_squeak_1.mp3")
+
+	am := assets.LoadAssets()
+	assets.PlaySound("door_squeak_1", am)
 }
