@@ -1,8 +1,6 @@
 package scenes
 
 import (
-	"fmt"
-
 	"github.com/brandonf2002/DYHTG-2023/assets"
 
 	"github.com/gopxl/pixel"
@@ -80,16 +78,8 @@ func LoadScenes() *SceneManager {
 	sm := SceneManager{sceneMap: make(map[string]*Scene)}
 	am := assets.LoadAssets()
 
-	start_action_func := func(game *Game, sm *SceneManager) { game.CurScene = GetScene("overworld", sm); fmt.Println("Testing") }
-	start_action := NewEntityAction(start_action_func, MouseClick, pixelgl.MouseButtonLeft)
-
-	startButton := Entity{
-		Sprite:  nil,
-		Rect:    pixel.R(364, 290, 700, 380),
-		Actions: []EntityAction{start_action},
-	}
-
-	sm.sceneMap["main_menu"] = NewScene("main_menu", assets.GetPicture("main_menu", am), startButton)
+	// sm.sceneMap["main_menu"] = NewScene("main_menu", assets.GetPicture("main_menu", am), startButton)
+	sm.sceneMap["main_menu"] = GenerateMainMenuScene(am)
 	sm.sceneMap["overworld"] = GenerateOverworldScene(am)
 
 	return &sm
