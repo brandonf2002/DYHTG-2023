@@ -1,32 +1,12 @@
 package main
 
 import (
+	"github.com/brandonf2002/DYHTG-2023/scenes"
 	"github.com/brandonf2002/DYHTG-2023/assets"
 	"github.com/gopxl/pixel"
 	"github.com/gopxl/pixel/pixelgl"
 	"golang.org/x/image/colornames"
 )
-
-type Game = struct {
-	curScene *Scene
-	score    int
-	name     string
-}
-
-func newGame(name string, score int, curScene *Scene) *Game {
-	g := Game{name: name, score: score, curScene: curScene}
-	return &g
-}
-
-type Scene struct {
-	name       string
-	background pixel.Picture
-}
-
-func newScene(name string, background pixel.Picture) *Scene {
-	s := Scene{name: name, background: background}
-	return &s
-}
 
 func run() {
 	cfg := pixelgl.WindowConfig{
@@ -38,27 +18,47 @@ func run() {
 		panic(err)
 	}
 
-	am := assets.LoadAssets()
-	s1 := newScene("Menu", assets.GetPicture("main_menu", am))
-	g := newGame("player", 0, s1)
-	sprite := pixel.NewSprite(g.curScene.background, g.curScene.background.Bounds())
+	all_scenes := scenes.LoadScenes()
+	// am := assets.LoadAssets()
+	g := scenes.NewGame("player", 0, scenes.GetScene("main_menu", all_scenes))
+
+	sprite := pixel.NewSprite(g.CurScene.Background, g.CurScene.Background.Bounds())
 
 	win.Clear(colornames.Greenyellow)
 	sprite.Draw(win, pixel.IM.Moved(win.Bounds().Center()))
 
 	for !win.Closed() {
+		sprite := pixel.NewSprite(g.CurScene.Background, g.CurScene.Background.Bounds())
+
 		win.Clear(colornames.Greenyellow)
 
-		// Adjust the sprite matrix to scale according to the window size
-		scaleX := win.Bounds().W() / g.curScene.background.Bounds().W()
-		scaleY := win.Bounds().H() / g.curScene.background.Bounds().H()
+		// Adjust the sprite matrix to scale according to the window size (Might delete)
+		scaleX := win.Bounds().W() / g.CurScene.Background.Bounds().W()
+		scaleY := win.Bounds().H() / g.CurScene.Background.Bounds().H()
 		sprite.Draw(win, pixel.IM.ScaledXY(pixel.ZV, pixel.V(scaleX, scaleY)).Moved(win.Bounds().Center()))
+
+		for _, sprite := range g.CurScene.InteractiveSprites {
+			switch sprite.InteractionType {
+			case scenes.MouseClick:
+				if win.JustPressed(pixelgl.MouseButtonLeft) && sprite.Rect.Contains(win.MousePosition()) {
+					sprite.Action(g, all_scenes)
+				}
+			case scenes.KeyPress:
+				if win.JustPressed(sprite.Key) {
+					sprite.Action(g, all_scenes)
+				}
+				// case scenes.BoundingBox:
+				// 	// Check if any other sprite's bounding box intersects with this sprite's bounding box
+				// 	for _, otherSprite := range currentScene.InteractiveSprites {
+				// 		if sprite != otherSprite && sprite.Rect.Intersect(otherSprite.Rect) != pixel.ZR {
+				// 			sprite.Action()
+				// 		}
+				// 	}
+			}
+		}
 
 		win.Update()
 	}
-	// for !win.Closed() {
-	// 	win.Update()
-	// }
 }
 
 func main() {
