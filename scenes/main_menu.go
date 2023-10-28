@@ -2,6 +2,7 @@ package scenes
 
 import (
 	"github.com/brandonf2002/DYHTG-2023/assets"
+
 	"github.com/gopxl/pixel"
 	"github.com/gopxl/pixel/pixelgl"
 )
@@ -9,18 +10,11 @@ import (
 func generateStartButton(am *assets.AssetManager) *Entity {
 	name := "start_button"
 
-	clikcer := NewEntityAction(func(g *Game, sm *SceneManager) {
+	clicker := NewEntityAction(func(g *Game, sm *SceneManager) {
 		g.CurScene = GetScene("overworld", sm)
 	}, MouseClick, pixelgl.MouseButtonLeft)
 
-	player := Entity{
-		Name:   name,
-		Sprite: nil,
-		Rect:   pixel.R(364, 290, 700, 380),
-		Actions: []EntityAction{
-			clikcer,
-		},
-	}
+	player := NewEntity(name, nil, pixel.R(364, 290, 700, 380), clicker)
 
 	return &player
 }

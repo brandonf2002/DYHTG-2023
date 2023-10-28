@@ -51,13 +51,9 @@ type Entity struct {
 	Actions []EntityAction
 }
 
-func NewEntity(sprite *pixel.Sprite, rect pixel.Rect, actions ...EntityAction) Entity {
-	e := Entity{Sprite: sprite, Rect: rect, Actions: actions}
+func NewEntity(name string, sprite *pixel.Sprite, rect pixel.Rect, actions ...EntityAction) Entity {
+	e := Entity{Name: name, Sprite: sprite, Rect: rect, Actions: actions}
 	return e
-}
-
-type SceneManager struct {
-	sceneMap map[string]*Scene
 }
 
 func NewScene(name string, background pixel.Picture, sprites ...Entity) *Scene {
@@ -72,6 +68,10 @@ func GetEntity(scene *Scene, name string) *Entity {
 		}
 	}
 	return nil
+}
+
+type SceneManager struct {
+	sceneMap map[string]*Scene
 }
 
 func LoadScenes() *SceneManager {
