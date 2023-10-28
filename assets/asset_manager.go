@@ -1,9 +1,10 @@
 package assets
 
 import (
+	"fmt"
 	"github.com/gopxl/pixel"
 	"os"
-	"image"
+	"image/png"
 )
 
 type AssetManager struct {
@@ -13,20 +14,23 @@ type AssetManager struct {
 func LoadAssets() *AssetManager {
 	pictureMap := make(map[string]pixel.Picture)
 	am := AssetManager{pictureMap: pictureMap}
-	loadPicture("menu_background", "png/menu_backgound.png", &am)
+	loadPicture("menu_background", "./assets/png/menu_background.png", &am)
 	return &am
 }
 
 func loadPicture(name string, path string, am *AssetManager) {
 	file, err := os.Open(path)
 	if err != nil {
+		fmt.Printf("failed to load %s: %s\n", path, err)
 		return
 	}
 	defer file.Close()
-	img, _, err := image.Decode(file)
+	img, err := png.Decode(file)
 	if err != nil {
+		fmt.Printf("failed to decode %s: %s\n", path, err)
 		return
 	}
+	fmt.Printf("%s loaded successfully\n", path)
 	am.pictureMap[name] = pixel.PictureDataFromImage(img)
 }
 

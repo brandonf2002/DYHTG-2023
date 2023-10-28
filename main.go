@@ -4,6 +4,7 @@ import (
 	"github.com/gopxl/pixel"
 	"github.com/gopxl/pixel/pixelgl"
 	"github.com/brandonf2002/DYHTG-2023/assets"
+	"golang.org/x/image/colornames"
 )
 
 type Game = struct {
@@ -40,9 +41,10 @@ func run() {
 	am := assets.LoadAssets()
 	s1 := newScene("Menu", assets.GetPicture("menu_background", am))
 	g := newGame("player", 0, s1)
-	sprite := pixel.NewSprite(g.curScene.background, pixel.R(0, 0, 200, 200))
+	pic := g.curScene.background
+	sprite := pixel.NewSprite(pic, pic.Bounds())
 
-	//win.Clear(colornames.Skyblue)
+	win.Clear(colornames.Skyblue)
 	sprite.Draw(win, pixel.IM)
 
 	for !win.Closed() {
