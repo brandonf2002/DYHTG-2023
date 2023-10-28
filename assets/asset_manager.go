@@ -5,7 +5,6 @@ import (
 	"os"
 	"time"
 	"image/png"
-	"os"
 
 	"github.com/gopxl/pixel"
 	"github.com/hajimehoshi/oto/v2"
