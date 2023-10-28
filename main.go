@@ -41,7 +41,7 @@ func run() {
 	am := assets.LoadAssets()
 	s1 := newScene("Menu", assets.GetPicture("menu_background", am))
 	g := newGame("player", 0, s1)
-	sprite := pixel.NewSprite(s1.background, pixel.R(0, 0, 200, 200))
+	sprite := pixel.NewSprite(g.curScene.background, g.curScene.background.Bounds())
 
 	win.Clear(colornames.Greenyellow)
 	sprite.Draw(win, pixel.IM.Moved(win.Bounds().Center()))
