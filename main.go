@@ -64,5 +64,5 @@ func run() {
 func main() {
 	//pixelgl.Run(run)
 	am := assets.LoadAssets()
-	assets.PlaySound("door_squeak_1", am)
+	assets.PlayRandomDoorSound(am)
 }

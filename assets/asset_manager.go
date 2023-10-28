@@ -2,9 +2,13 @@ package assets
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"time"
 	"image/png"
+
+	"math/rand"
+	"strconv"
 
 	"github.com/gopxl/pixel"
 	"github.com/hajimehoshi/oto/v2"
@@ -25,6 +29,7 @@ func LoadAssets() *AssetManager {
 	loadPicture("overworld", "./assets/png/overworld.png", &am)
 	loadSound("door_squeak_1", "./assets/audio/door_squeak_1.mp3", &am)
 	loadSound("door_squeak_2", "./assets/audio/door_squeak_2.mp3", &am)
+	loadSound("door_squeak_3", "./assets/audio/door_squeak_3.mp3", &am)
 	return &am
 }
 
@@ -51,16 +56,16 @@ func loadSound(name string, path string, am *AssetManager) {
 	if err != nil {
 		return
 	}
-	defer file.Close()
 	sound, err := mp3.NewDecoder(file)
 	if err != nil {
 		return
 	}
+
 	context, ready, err := oto.NewContext(sound.SampleRate(), 2, 2)
 	if err != nil {
 		return
 	}
-	<-ready
+	<-ready 
 
 	player := context.NewPlayer(sound)
 	am.soundMap[name] = player
@@ -69,8 +74,15 @@ func loadSound(name string, path string, am *AssetManager) {
 
 func PlaySound(name string, am *AssetManager) {
 	player := am.soundMap[name]
+	player.(io.Seeker).Seek(0, io.SeekStart)
 	player.Play()
 	for player.IsPlaying() {
         time.Sleep(time.Millisecond)
     }
+}
+
+func PlayRandomDoorSound(am *AssetManager) {
+	nSound := rand.Intn(3) + 1
+	doorSound := "door_squeak_" + strconv.Itoa(nSound)
+	PlaySound(doorSound, am)
 }
