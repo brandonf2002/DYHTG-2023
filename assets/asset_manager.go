@@ -2,8 +2,9 @@ package assets
 
 import (
 	"fmt"
-	"os"
 	"image/png"
+	"os"
+
 	"github.com/gopxl/pixel"
 	"github.com/hajimehoshi/oto/v2"
 	"github.com/hajimehoshi/go-mp3"
@@ -18,6 +19,8 @@ func LoadAssets() *AssetManager {
 	pictureMap := make(map[string]pixel.Picture)
 	am := AssetManager{pictureMap: pictureMap}
 	loadPicture("menu_background", "./assets/png/menu_background.png", &am)
+	loadPicture("main_menu", "./assets/png/main_menu.png", &am)
+	loadPicture("overworld", "./assets/png/overworld.png", &am)
 	return &am
 }
 
