@@ -3,6 +3,7 @@ package assets
 import (
 	"fmt"
 	"os"
+	"time"
 	"image/png"
 	"github.com/gopxl/pixel"
 	"github.com/hajimehoshi/oto/v2"
@@ -11,13 +12,16 @@ import (
 
 type AssetManager struct {
 	pictureMap map[string]pixel.Picture
-	//soundMap map[string]
+	soundMap map[string]oto.Player
 }
 
 func LoadAssets() *AssetManager {
 	pictureMap := make(map[string]pixel.Picture)
-	am := AssetManager{pictureMap: pictureMap}
+	soundMap := make(map[string]oto.Player)
+	am := AssetManager{pictureMap: pictureMap, soundMap: soundMap}
 	loadPicture("menu_background", "./assets/png/menu_background.png", &am)
+	loadSound("door_squeak_1", "./assets/audio/door_squeak_1.mp3", &am)
+	loadSound("door_squeak_2", "./assets/audio/door_squeak_2.mp3", &am)
 	return &am
 }
 
@@ -39,7 +43,7 @@ func GetPicture(name string, am *AssetManager) pixel.Picture {
 	return am.pictureMap[name]
 }
 
-func LoadSound(name string, path string) {
+func loadSound(name string, path string, am *AssetManager) {
 	file, err := os.Open(path)
 	if err != nil {
 		return
@@ -56,5 +60,14 @@ func LoadSound(name string, path string) {
 	<-ready
 
 	player := context.NewPlayer(sound)
+	am.soundMap[name] = player
+	fmt.Printf("%s loaded successfully\n", path)
+}
+
+func PlaySound(name string, am *AssetManager) {
+	player := am.soundMap[name]
 	player.Play()
+	for player.IsPlaying() {
+        time.Sleep(time.Millisecond)
+    }
 }
