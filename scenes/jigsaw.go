@@ -1,6 +1,8 @@
 package scenes
 
 import (
+	"math/rand"
+
 	"github.com/gopxl/pixel"
 )
 
@@ -17,13 +19,27 @@ func NewSceneJigsaw(game *Game) *SceneJigsaw {
 	sjs := SceneJigsaw{game: game, id: 0, background: game.Assets.GetPicture("menu_background")}
 	sjs.entityManager = make([]ComponentVector, 64)
 
-	skull_pic := game.Assets.GetPicture("spooky_man")
+	//skull_pic := game.Assets.GetPicture("spooky_man")
+	jigsaw_pic := game.Assets.GetPicture("jigsaw")
 
-	skull := sjs.AddEntity()
-	skull.Draggable = NewCDraggable()
-	skull.Sprite = NewCSprite(pixel.NewSprite(skull_pic, skull_pic.Bounds()))
-	skull.Transform = NewCTransform(game.Window.Bounds().Center(), pixel.ZV, pixel.V(0.5, 0.5), pixel.ZV, 0, 0)
-	skull.BoundingBox = NewCBoundingBox(skull_pic.Bounds().Center())
+	// skull := sjs.AddEntity()
+	// skull.Draggable = NewCDraggable()
+	// skull.Sprite = NewCSprite(pixel.NewSprite(skull_pic, skull_pic.Bounds()))
+	// skull.Transform = NewCTransform(game.Window.Bounds().Center(), pixel.ZV, pixel.V(0.5, 0.5), pixel.ZV, 0, 0)
+	// skull.BoundingBox = NewCBoundingBox(skull_pic.Bounds().Center())
+
+	for i := 0; i < 3; i++ {
+		for j := 0; j < 5; j++ {
+			jigsawPieceWidth := jigsaw_pic.Bounds().W() / 3
+			jigsawPieceHeight := jigsaw_pic.Bounds().H() / 5
+
+			jigsawPiece := sjs.AddEntity()
+			jigsawPiece.Draggable = NewCDraggable()
+			jigsawPiece.Sprite = NewCSprite(pixel.NewSprite(jigsaw_pic, pixel.R(float64(i)*jigsawPieceWidth, float64(j)*jigsawPieceHeight, float64(i+1)*jigsawPieceWidth, float64(j+1)*jigsawPieceHeight)))
+			jigsawPiece.Transform = NewCTransform(pixel.V(rand.Float64()*(game.Window.Bounds().W()-jigsawPieceWidth), rand.Float64()*(game.Window.Bounds().H()-jigsawPieceHeight)), pixel.ZV, pixel.V(1, 1), pixel.ZV, 0, 0)
+			jigsawPiece.BoundingBox = NewCBoundingBox(pixel.V(jigsawPieceWidth, jigsawPieceHeight))
+		}
+	}
 
 	return &sjs
 }
@@ -65,10 +81,10 @@ func (sjs *SceneJigsaw) Render() {
 
 func (sjs *SceneJigsaw) DoAction(action Action) {
 	if action.Name == "LEFT_MOUSE" {
-		for i, entity := range sjs.entityManager {
-			if (CDraggable{}) != entity.Draggable {
+		for i := 0; i < len(sjs.entityManager); i++ {
+			if (CDraggable{}) != sjs.entityManager[i].Draggable && Inside(action.Coords, sjs.entityManager[i]) {
 				sjs.dragged = &sjs.entityManager[i]
-				sjs.dragOffset = Sub(action.Coords, entity.Transform.Pos)
+				sjs.dragOffset = Sub(action.Coords, sjs.entityManager[i].Transform.Pos)
 			}
 		}
 	}
