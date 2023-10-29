@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/gopxl/pixel"
-	"golang.org/x/image/colornames"
 )
 
 type Pair struct {
@@ -30,7 +29,7 @@ type SceneSpiders struct {
 }
 
 func NewSceneSpiders(game *Game) *SceneSpiders {
-	ssp := SceneSpiders{game: game, id: 0, background: game.Assets.GetPicture("menu_background"), playerMatching: make(Matching, 5), xOffset: 100, yOffset: 100, size: 64}
+	ssp := SceneSpiders{game: game, id: 0, background: game.Assets.GetPicture("spiders_background"), playerMatching: make(Matching, 5), xOffset: 100, yOffset: 100, size: 64}
 	ssp.entityManager = make([]ComponentVector, 256)
 
 	spiderSprites := make([]*pixel.Sprite, 5)
@@ -99,8 +98,13 @@ func (ssp *SceneSpiders) sLifespan() {
 }
 
 func (ssp *SceneSpiders) AddEntity() *ComponentVector {
+	if ssp.id >= len(ssp.entityManager)-2 {
+
+	}
+
 	ssp.entityManager[ssp.id] = ComponentVector{}
 	ssp.id += 1
+
 	return &ssp.entityManager[ssp.id-1]
 }
 
@@ -114,13 +118,13 @@ func (ssp *SceneSpiders) Update() {
 }
 
 func (ssp *SceneSpiders) Render() {
-	//sprite := pixel.NewSprite(ssp.background, ssp.background.Bounds())
+	sprite := pixel.NewSprite(ssp.background, ssp.background.Bounds())
 
-	//scaleX := ssp.game.Window.Bounds().W() / ssp.background.Bounds().W()
-	//scaleY := ssp.game.Window.Bounds().H() / ssp.background.Bounds().H()
-	//sprite.Draw(ssp.game.Window, pixel.IM.ScaledXY(pixel.ZV, pixel.V(scaleX, scaleY)).Moved(ssp.game.Window.Bounds().Center()))
+	scaleX := ssp.game.Window.Bounds().W() / ssp.background.Bounds().W()
+	scaleY := ssp.game.Window.Bounds().H() / ssp.background.Bounds().H()
+	sprite.Draw(ssp.game.Window, pixel.IM.ScaledXY(pixel.ZV, pixel.V(scaleX, scaleY)).Moved(ssp.game.Window.Bounds().Center()))
 
-	ssp.game.Window.Clear(colornames.Antiquewhite)
+	// ssp.game.Window.Clear(colornames.Antiquewhite)
 
 	for _, entity := range ssp.entityManager {
 		if (CTransform{}) != entity.Transform && (CBoundingBox{}) != entity.BoundingBox && (CSprite{}) != entity.Sprite {
