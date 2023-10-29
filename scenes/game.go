@@ -62,6 +62,9 @@ func (g *Game) sUserInput() {
 	if g.Window.JustPressed(pixelgl.KeyX) {
 		scene.DoAction(NewAction("X", pixel.ZV))
 	}
+	if g.Window.JustPressed(pixelgl.KeyC) {
+		scene.DoAction(NewAction("C", pixel.ZV))
+	}
 }
 
 func (g *Game) ChangeScene(name string, scene Scene) {

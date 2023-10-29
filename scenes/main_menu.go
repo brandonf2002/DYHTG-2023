@@ -79,5 +79,7 @@ func (smm *SceneMainMenu) DoAction(action Action) {
 	} else if action.Name == "X" {
 		smm.game.ChangeScene("SPIDERS", NewSceneSpiders(smm.game))
 		smm.game.ChangeScene("TRANSITION", NewSceneTransition(smm.game, "SPIDERS"))
+	} else if action.Name == "C" {
+		smm.game.ChangeScene("TRANSITION", NewSceneTransition(smm.game, "SPIDERS"))
 	}
 }
