@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/brandonf2002/DYHTG-2023/assets"
+	"github.com/gopxl/pixel"
 	"github.com/gopxl/pixel/pixelgl"
 )
 
@@ -56,7 +57,10 @@ func (g *Game) sUserInput() {
 		scene.DoAction(NewAction("LEFT_MOUSE", g.Window.MousePosition()))
 	}
 	if g.Window.JustPressed(pixelgl.KeyEscape) {
-		scene.DoAction(NewAction("ESC", g.Window.MousePosition()))
+		scene.DoAction(NewAction("ESC", pixel.ZV))
+	}
+	if g.Window.JustPressed(pixelgl.KeyX) {
+		scene.DoAction(NewAction("X", pixel.ZV))
 	}
 }
 
