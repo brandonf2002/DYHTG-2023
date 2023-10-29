@@ -175,16 +175,16 @@ func (soc *SceneOnlyConnect) DoAction(action Action) {
 			}
 		}
 	}
-	// if action.Name == "LEFT_MOUSE" {
-	// 	mouseX, mouseY := soc.game.Window.MousePosition().XY()
-	// 	fmt.Printf("Mouse X: %v, Mouse Y: %v\n", mouseX, mouseY)
-	// 	for _, entity := range soc.entityManager {
-	// 		if entity.Transform.Pos.X <= mouseX && entity.Transform.Pos.X+cellWidth >= mouseX &&
-	// 			entity.Transform.Pos.Y-cellHeight <= mouseY && entity.Transform.Pos.Y >= mouseY {
-	// 			fmt.Printf("Clicked on: %s\n", entity.Text.Str_of_Text)
-	// 		}
-	// 	}
-	// }
+	if action.Name == "LEFT_MOUSE" {
+		mouseX, mouseY := soc.game.Window.MousePosition().XY()
+		fmt.Printf("Mouse X: %v, Mouse Y: %v\n", mouseX, mouseY)
+		for _, entity := range soc.entityManager {
+			if entity.Transform.Pos.X <= mouseX && entity.Transform.Pos.X+cellWidth >= mouseX &&
+				entity.Transform.Pos.Y-cellHeight <= mouseY && entity.Transform.Pos.Y >= mouseY {
+				fmt.Printf("Clicked on: %s\n", entity.Text.Str_of_Text)
+			}
+		}
+	}
 	if action.Name == "ESC" {
 		soc.game.ChangeScene("MENU", nil)
 	}

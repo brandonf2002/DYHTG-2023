@@ -27,6 +27,7 @@ func NewSceneCodingChallenge(game *Game) *SceneCodingChallenge {
 	scc.entityManager = make([]ComponentVector, 64)
 
 	user_input := text.New(pixel.V(50, 700), scc.game.Assets.GetFont("basic"))
+	user_input.Color = color.RGBA{100, 255, 50, 255}
 	user_input.WriteString(`/**
  * Definition for singly-linked list.
  * type ListNode struct {
@@ -60,10 +61,16 @@ You are given the heads of two sorted linked lists list1 and list2. Merge the tw
 	problem_statement := scc.AddEntity()
 	problem_statement.Text = NewCText(display_text)
 
+	num_correct := text.New(pixel.V(50, 200), scc.game.Assets.GetFont("basic"))
+	num_correct.Color = color.RGBA{255, 140, 20, 255}
+
+	num_cor := scc.AddEntity()
+	num_cor.Text = NewCText(num_correct)
+
 	return &scc
 }
 
-func eval_function(scc *SceneCodingChallenge, function string) bool {
+func eval_function(scc *SceneCodingChallenge, function string) int {
 	i := interp.New(interp.Options{})
 	i.Use(stdlib.Symbols)
 	v, err := i.Eval(`
@@ -130,7 +137,7 @@ func listToSlice(node *ListNode) []int {
 	return nums
 }
 
-func eval_tests() bool {
+func eval_tests() int {
 	tests := []struct {
 		list1    []int
 		list2    []int
@@ -148,7 +155,7 @@ func eval_tests() bool {
 		},
 	}
 
-	ret := true
+	ret := 2
 
 	for _, test := range tests {
 		l1 := sliceToList(test.list1)
@@ -156,7 +163,7 @@ func eval_tests() bool {
 		merged := mergeTwoLists(l1, l2)
 		result := listToSlice(merged)
 		if !(reflect.DeepEqual(result, test.expected)) {
-			ret = false
+			ret -= 1
 		}
 		if reflect.DeepEqual(result, test.expected) {
 			fmt.Println("Passed!")
@@ -207,13 +214,26 @@ func eval_tests() bool {
 	fmt.Printf("Result type 1: %v\n", v)
 
 	fmt.Printf("Result type 2: %v\n", v.IsValid())
-	if v.IsValid() && v.Type() == reflect.TypeOf(true) {
-		println(v.Bool())
-		return v.Bool()
+	if v.IsValid() && v.Type() == reflect.TypeOf(1) {
+		println(v.Int())
+		x := int(v.Int())
+		if x == 2 {
+			scc.entityManager[2].Text.Str_of_Text = "Passed 2/2 Tests"
+		} else if x == 1 {
+			scc.entityManager[2].Text.Str_of_Text = "Passed 1/2 Tests"
+		} else {
+			scc.entityManager[2].Text.Str_of_Text = "Passed 0/2 Tests"
+		}
+
+		println(scc.entityManager[2].Text.Str_of_Text)
+
+		return int(v.Int())
 	}
 
 	println("Did not")
-	return false
+	scc.entityManager[2].Text.Str_of_Text = "Passed 0/2 Tests"
+	println(scc.entityManager[2].Text.Str_of_Text)
+	return 0
 }
 
 // wrapText wraps the given text so that it fits within the given width
@@ -337,10 +357,37 @@ func (scc *SceneCodingChallenge) Render() {
 		eval_function(scc, scc.entityManager[0].Text.Str_of_Text)
 	}
 
+	if scc.game.Window.JustPressed(pixelgl.KeyLeftSuper) {
+		println("Shift + Enter")
+		scc.entityManager[0].Text.Str_of_Text = `
+func mergeTwoLists(l1 *ListNode, l2 *ListNode) *ListNode {
+    if l1 == nil {
+        return l2
+    }
+    if l2 == nil {
+        return l1
+    }
+    if l1.Val < l2.Val {
+        l1.Next = mergeTwoLists(l1.Next, l2)
+        return l1
+    } else {
+        l2.Next = mergeTwoLists(l1, l2.Next)
+        return l2
+    }
+}
+		`
+		scc.entityManager[0].Text.Text.Clear()
+		scc.entityManager[0].Text.Text.WriteString(scc.entityManager[0].Text.Str_of_Text)
+	}
+
 	num_lines := len(strings.Split(strings.Trim(scc.entityManager[0].Text.Str_of_Text, "\n"), "\n"))
 	scc.entityManager[0].Text.Text.Draw(scc.game.Window, pixel.IM.Scaled(scc.entityManager[0].Text.Text.Orig.Add(pixel.V(0, float64(num_lines)*26)), 2))
 
 	scc.entityManager[1].Text.Text.Draw(scc.game.Window, pixel.IM.Scaled(scc.entityManager[1].Text.Text.Orig, 2))
+
+	scc.entityManager[2].Text.Text.WriteString(scc.entityManager[2].Text.Str_of_Text)
+	scc.entityManager[2].Text.Text.Draw(scc.game.Window, pixel.IM.Scaled(scc.entityManager[2].Text.Text.Orig, 2))
+	scc.entityManager[2].Text.Text.Clear()
 
 	num_lines = len(strings.Split(scc.entityManager[0].Text.Str_of_Text, "\n"))
 	x, y, sprite := drawCursor(scc.game.Window, scc.entityManager[0].Text.Text, scc.entityManager[0].Text.CursorPos, scc.entityManager[0].Text.Str_of_Text, *scc)
