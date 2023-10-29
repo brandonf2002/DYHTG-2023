@@ -14,6 +14,12 @@ type ComponentVector struct {
 	LifeSpan    CLifeSpan
 	Tag         CTag
 	Draggable   CDraggable
+	ButtonState CButtonState
+}
+type CButtonState struct {
+	IsPressed bool
+	Color     pixel.RGBA
+	Correct   bool // Indicates if this button is a correct answer
 }
 
 type CTransform struct {
