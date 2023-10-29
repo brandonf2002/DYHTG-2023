@@ -2,6 +2,9 @@ package scenes
 
 import (
 	"fmt"
+	"image"
+	"image/color"
+	"reflect"
 	"strings"
 
 	"github.com/gopxl/pixel"
@@ -24,9 +27,30 @@ func NewSceneCodingChallenge(game *Game) *SceneCodingChallenge {
 	scc.entityManager = make([]ComponentVector, 64)
 
 	user_input := text.New(pixel.V(50, 700), scc.game.Assets.GetFont("basic"))
+	user_input.WriteString(`/**
+ * Definition for singly-linked list.
+ * type ListNode struct {
+ *     Val int
+ *     Next *ListNode
+ * }
+ */
+func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
+    
+}`)
 
 	term := scc.AddEntity()
 	term.Text = NewCText(user_input)
+	term.Text.Str_of_Text = `/**
+ * Definition for singly-linked list.
+ * type ListNode struct {
+ *     Val int
+ *     Next *ListNode
+ * }
+ */
+func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
+    
+}`
+	term.Text.CursorPos = 183
 
 	display_text := text.New(pixel.V(50, 800), scc.game.Assets.GetFont("basic"))
 	wrapText(display_text, `Merge Two Sorted Lists
@@ -36,10 +60,148 @@ You are given the heads of two sorted linked lists list1 and list2. Merge the tw
 	problem_statement := scc.AddEntity()
 	problem_statement.Text = NewCText(display_text)
 
-	scc.lets_go = interp.New(interp.Options{})
-	scc.lets_go.Use(stdlib.Symbols)
+	return &scc
+}
 
-	v, err := scc.lets_go.Eval(`
+// func newInterp() *interp.Interpreter {
+// 	i := interp.New(interp.Options{})
+// 	i.Use(stdlib.Symbols)
+// 	v, err := i.Eval(`
+// import (
+// 	"fmt"
+// 	"reflect"
+// )
+
+// // Definition for singly-linked list.
+// type ListNode struct {
+//     Val  int
+//     Next *ListNode
+// }
+
+// // func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
+// //     // dummy node to start the merged list
+// //     dummy := &ListNode{}
+// //     current := dummy
+
+// //     // while both lists are not empty
+// //     for list1 != nil && list2 != nil {
+// //         if list1.Val < list2.Val {
+// //             current.Next = list1
+// //             list1 = list1.Next
+// //         } else {
+// //             current.Next = list2
+// //             list2 = list2.Next
+// //         }
+// //         current = current.Next
+// //     }
+
+// //     // if list1 is not exhausted
+// //     if list1 != nil {
+// //         current.Next = list1
+// //     }
+
+// //     // if list2 is not exhausted
+// //     if list2 != nil {
+// //         current.Next = list2
+// //     }
+
+// //     return dummy.Next
+// // }
+
+// // Utility function to build a linked list from a slice.
+// func sliceToList(nums []int) *ListNode {
+// 	dummy := &ListNode{}
+// 	current := dummy
+// 	for _, num := range nums {
+// 		current.Next = &ListNode{Val: num}
+// 		current = current.Next
+// 	}
+// 	return dummy.Next
+// }
+
+// // Utility function to convert a linked list back to a slice.
+// func listToSlice(node *ListNode) []int {
+// 	var nums []int
+// 	for node != nil {
+// 		nums = append(nums, node.Val)
+// 		node = node.Next
+// 	}
+// 	return nums
+// }
+
+// func eval_tests() bool {
+// 	tests := []struct {
+// 		list1    []int
+// 		list2    []int
+// 		expected []int
+// 	}{
+// 		{
+// 			list1:    []int{1, 2, 4},
+// 			list2:    []int{1, 3, 4},
+// 			expected: []int{1, 1, 2, 3, 4, 4},
+// 		},
+// 		{
+// 			list1:    []int{},
+// 			list2:    []int{0},
+// 			expected: []int{0},
+// 		},
+// 	}
+
+// 	for _, test := range tests {
+// 		l1 := sliceToList(test.list1)
+// 		l2 := sliceToList(test.list2)
+// 		merged := mergeTwoLists(l1, l2)
+// 		result := listToSlice(merged)
+// 		if !(reflect.DeepEqual(result, test.expected)) {
+// 			return false
+// 		}
+// 	}
+// 	return true
+// }
+
+// func main() {
+// 	// Test cases
+// 	tests := []struct {
+// 		list1    []int
+// 		list2    []int
+// 		expected []int
+// 	}{
+// 		{
+// 			list1:    []int{1, 2, 4},
+// 			list2:    []int{1, 3, 4},
+// 			expected: []int{1, 1, 2, 3, 4, 4},
+// 		},
+// 		{
+// 			list1:    []int{},
+// 			list2:    []int{0},
+// 			expected: []int{0},
+// 		},
+// 	}
+
+// 	for _, test := range tests {
+// 		l1 := sliceToList(test.list1)
+// 		l2 := sliceToList(test.list2)
+// 		merged := mergeTwoLists(l1, l2)
+// 		result := listToSlice(merged)
+// 		if reflect.DeepEqual(result, test.expected) {
+// 			fmt.Println("Passed!")
+// 		} else {
+// 			fmt.Printf("Failed! Expected %v but got %v\n", test.expected, result)
+// 		}
+// 	}
+// }
+// 	`)
+// 	if err != nil {
+// 		fmt.Println("Error:", err)
+// 	}
+// 	fmt.Println("Result:", v)
+// 	return i
+// }
+
+func eval_function(scc *SceneCodingChallenge, function string) bool {
+	i := interp.New(interp.Options{})
+	i.Use(stdlib.Symbols)
+	v, err := i.Eval(`
 import (
 	"fmt"
 	"reflect"
@@ -51,40 +213,41 @@ type ListNode struct {
     Next *ListNode
 }
 
-func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
-    // dummy node to start the merged list
-    dummy := &ListNode{}
-    current := dummy
+// func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
+//     // dummy node to start the merged list
+//     dummy := &ListNode{}
+//     current := dummy
 
-    // while both lists are not empty
-    for list1 != nil && list2 != nil {
-        if list1.Val < list2.Val {
-            current.Next = list1
-            list1 = list1.Next
-        } else {
-            current.Next = list2
-            list2 = list2.Next
-        }
-        current = current.Next
-    }
+//     // while both lists are not empty
+//     for list1 != nil && list2 != nil {
+//         if list1.Val < list2.Val {
+//             current.Next = list1
+//             list1 = list1.Next
+//         } else {
+//             current.Next = list2
+//             list2 = list2.Next
+//         }
+//         current = current.Next
+//     }
 
-    // if list1 is not exhausted
-    if list1 != nil {
-        current.Next = list1
-    }
+//     // if list1 is not exhausted
+//     if list1 != nil {
+//         current.Next = list1
+//     }
 
-    // if list2 is not exhausted
-    if list2 != nil {
-        current.Next = list2
-    }
+//     // if list2 is not exhausted
+//     if list2 != nil {
+//         current.Next = list2
+//     }
 
-    return dummy.Next
-}
+//     return dummy.Next
+// }
 
 // Utility function to build a linked list from a slice.
 func sliceToList(nums []int) *ListNode {
 	dummy := &ListNode{}
 	current := dummy
+	print("Hello")
 	for _, num := range nums {
 		current.Next = &ListNode{Val: num}
 		current = current.Next
@@ -120,62 +283,83 @@ func eval_tests() bool {
 		},
 	}
 
+	ret := true
+
 	for _, test := range tests {
 		l1 := sliceToList(test.list1)
 		l2 := sliceToList(test.list2)
 		merged := mergeTwoLists(l1, l2)
 		result := listToSlice(merged)
 		if !(reflect.DeepEqual(result, test.expected)) {
-			return false
+			ret = false
 		}
-	}
-	return true
-}
-
-func main() {
-	// Test cases
-	tests := []struct {
-		list1    []int
-		list2    []int
-		expected []int
-	}{
-		{
-			list1:    []int{1, 2, 4},
-			list2:    []int{1, 3, 4},
-			expected: []int{1, 1, 2, 3, 4, 4},
-		},
-		{
-			list1:    []int{},
-			list2:    []int{0},
-			expected: []int{0},
-		},
-	}
-
-	for _, test := range tests {
-		l1 := sliceToList(test.list1)
-		l2 := sliceToList(test.list2)
-		merged := mergeTwoLists(l1, l2)
-		result := listToSlice(merged)
 		if reflect.DeepEqual(result, test.expected) {
 			fmt.Println("Passed!")
 		} else {
 			fmt.Printf("Failed! Expected %v but got %v\n", test.expected, result)
 		}
 	}
+	return ret
 }
-	`)
+
+// func main() {
+// 	// Test cases
+// 	tests := []struct {
+// 		list1    []int
+// 		list2    []int
+// 		expected []int
+// 	}{
+// 		{
+// 			list1:    []int{1, 2, 4},
+// 			list2:    []int{1, 3, 4},
+// 			expected: []int{1, 1, 2, 3, 4, 4},
+// 		},
+// 		{
+// 			list1:    []int{},
+// 			list2:    []int{0},
+// 			expected: []int{0},
+// 		},
+// 	}
+
+// 	for _, test := range tests {
+// 		l1 := sliceToList(test.list1)
+// 		l2 := sliceToList(test.list2)
+// 		merged := mergeTwoLists(l1, l2)
+// 		result := listToSlice(merged)
+// 		if reflect.DeepEqual(result, test.expected) {
+// 			fmt.Println("Passed!")
+// 		} else {
+// 			fmt.Printf("Failed! Expected %v but got %v\n", test.expected, result)
+// 		}
+// 	}
+// }
+	` + "\n\n" + function)
+
+	// v, err = i.Eval(function)
+	// v, err = i.Eval(`
+	// func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
+	// return list2
+	// }
+	// `)
+	// if err != nil {
+	// 	fmt.Println("Error:", err)
+	// }
+	// fmt.Printf("Result type 1: %v", v)
+
+	v, err = i.Eval("eval_tests()")
 	if err != nil {
 		fmt.Println("Error:", err)
 	}
-	fmt.Println("Result:", v)
+	fmt.Printf("Result type 1: %v\n", v)
 
-	v, err = scc.lets_go.Eval("eval_tests()")
-	if err != nil {
-		fmt.Println("Error:", err)
+	fmt.Printf("Result type 2: %v\n", v.IsValid())
+	if v.IsValid() && v.Type() == reflect.TypeOf(true) {
+		println(v.Bool())
+		return v.Bool()
 	}
-	fmt.Println("Result:", v)
 
-	return &scc
+	println("Did not")
+	return false
 }
 
 // wrapText wraps the given text so that it fits within the given width
@@ -211,34 +395,145 @@ func (scc *SceneCodingChallenge) Update() {
 	scc.Render()
 }
 
+// Create a single-colored texture for the cursor
+func createCursorTexture(scc SceneCodingChallenge) *pixel.PictureData {
+	img := image.NewRGBA(image.Rect(0, 0, 3, int(scc.entityManager[0].Text.Text.LineHeight)*2))
+	col := color.RGBA{0, 255, 0, 255} // Black color for the cursor
+	for y := img.Rect.Min.Y; y < img.Rect.Max.Y; y++ {
+		for x := img.Rect.Min.X; x < img.Rect.Max.X; x++ {
+			img.Set(int(x), int(y), col)
+		}
+	}
+	return pixel.PictureDataFromImage(img)
+}
+
+func drawCursor(win *pixelgl.Window, txt *text.Text, cursorPos int, str string, scc SceneCodingChallenge) (float64, float64, *pixel.Sprite) {
+	lines := strings.Split(str, "\n")
+
+	totalChars := 0
+	cursorPosX := txt.Orig.X
+	cursorPosY := txt.Orig.Y
+	lineHeight := txt.LineHeight
+
+	for _, line := range lines {
+		if totalChars+len(line) >= cursorPos {
+			// If the cursor is within this line, calculate its X position
+			cursorPosX += txt.BoundsOf(line[:cursorPos-totalChars]).W() * 2
+			break
+		} else {
+			// Otherwise, move the Y position up by one line and continue
+			cursorPosY -= lineHeight * 2
+			totalChars += len(line) + 1 // +1 to account for the newline character
+		}
+	}
+
+	// cursorRect := pixel.R(cursorPosX, cursorPosY, cursorPosX+2, cursorPosY+lineHeight) // 2 is the width of the cursor
+	// Calculate the width of the text up to the cursor's position
+	// subTextWidth := txt.BoundsOf(str[:cursorPos]).W() * 2
+	// lines := strings.Split(str, "\n")
+	// lineNum := 0
+	// charCount := 0
+	// for i, line := range lines {
+	// 	if charCount+len(line)+1 > cursorPos { // +1 to account for the newline character
+	// 		lineNum = i
+	// 		break
+	// 	}
+	// 	charCount += len(line) + 1
+	// }
+
+	// lineHeight := txt.LineHeight
+	// cursorPosX := txt.Orig.X + subTextWidth
+	// cursorPosY := txt.Orig.Y - float64(lineNum)*lineHeight
+
+	// Calculate the top-left and bottom-right points of the cursor rectangle
+	// topLeft := pixel.V(txt.Orig.X+subTextWidth, txt.Orig.Y)
+	// bottomRight := pixel.V(txt.Orig.X+subTextWidth+2, txt.Orig.Y+txt.LineHeight) // 2 is the cursor width, you can adjust this
+
+	cursorTexture := createCursorTexture(scc)
+	cursorSprite := pixel.NewSprite(pixel.Picture(cursorTexture), cursorTexture.Bounds())
+	// cursorPosVec := pixel.V(50+subTextWidth, txt.Orig.Y)
+	return cursorPosX, cursorPosY, cursorSprite
+	// Draw a simple cursor using a rectangle
+}
+
 func (scc *SceneCodingChallenge) Render() {
 
 	scc.game.Window.Clear(pixel.RGB(0, 0, 0))
-
-	// display_text := text.New(pixel.V(100, 500), scc.game.Assets.GetFont("basic"))
-
-	// display_text.Draw(scc.game.Window, pixel.IM)
-
-	// sprite := pixel.NewSprite(scc.background, scc.background.Bounds())
-
-	// scaleX := scc.game.Window.Bounds().W() / scc.background.Bounds().W()
-	// scaleY := scc.game.Window.Bounds().H() / scc.background.Bounds().H()
-
-	// sprite.Draw(scc.game.Window, pixel.IM.ScaledXY(pixel.ZV, pixel.V(scaleX, scaleY)).Moved(scc.game.Window.Bounds().Center()))
-
 	char := scc.game.Window.Typed()
-	scc.entityManager[0].Text.Text.WriteString(scc.game.Window.Typed())
-	scc.entityManager[0].Text.Str_of_Text += char
-	if scc.game.Window.JustPressed(pixelgl.KeyEnter) || scc.game.Window.Repeated(pixelgl.KeyEnter) {
-		scc.entityManager[0].Text.Text.WriteRune('\n')
-		scc.entityManager[0].Text.Str_of_Text += string('\n')
+	if len(char) > 0 {
+		// Insert char at the cursor's position
+		scc.entityManager[0].Text.Str_of_Text = scc.entityManager[0].Text.Str_of_Text[:scc.entityManager[0].Text.CursorPos] + char + scc.entityManager[0].Text.Str_of_Text[scc.entityManager[0].Text.CursorPos:]
+		scc.entityManager[0].Text.CursorPos += len(char)
+		scc.entityManager[0].Text.Text.Clear()
+		scc.entityManager[0].Text.Text.WriteString(scc.entityManager[0].Text.Str_of_Text)
 	}
+
+	// For the enter key:
+	if scc.game.Window.JustPressed(pixelgl.KeyEnter) || scc.game.Window.Repeated(pixelgl.KeyEnter) {
+		// Insert newline at the cursor's position
+		scc.entityManager[0].Text.Str_of_Text = scc.entityManager[0].Text.Str_of_Text[:scc.entityManager[0].Text.CursorPos] + "\n" + scc.entityManager[0].Text.Str_of_Text[scc.entityManager[0].Text.CursorPos:]
+		scc.entityManager[0].Text.CursorPos++ // Move cursor after the newline
+		scc.entityManager[0].Text.Text.Clear()
+		scc.entityManager[0].Text.Text.WriteString(scc.entityManager[0].Text.Str_of_Text)
+	}
+
+	// For the backspace key:
+	if scc.game.Window.JustPressed(pixelgl.KeyBackspace) || scc.game.Window.Repeated(pixelgl.KeyBackspace) {
+		if scc.entityManager[0].Text.CursorPos > 0 {
+			// Remove the character before the cursor
+			scc.entityManager[0].Text.Str_of_Text = scc.entityManager[0].Text.Str_of_Text[:scc.entityManager[0].Text.CursorPos-1] + scc.entityManager[0].Text.Str_of_Text[scc.entityManager[0].Text.CursorPos:]
+			scc.entityManager[0].Text.CursorPos--
+			scc.entityManager[0].Text.Text.Clear()
+			scc.entityManager[0].Text.Text.WriteString(scc.entityManager[0].Text.Str_of_Text)
+		}
+	}
+
+	// char := scc.game.Window.Typed()
+	// scc.entityManager[0].Text.Text.WriteString(scc.game.Window.Typed())
+	// scc.entityManager[0].Text.Str_of_Text += char
+
+	if scc.game.Window.JustPressed(pixelgl.KeyLeft) || scc.game.Window.Repeated(pixelgl.KeyLeft) {
+		if scc.entityManager[0].Text.CursorPos > 0 {
+			scc.entityManager[0].Text.CursorPos--
+		}
+	} else if scc.game.Window.JustPressed(pixelgl.KeyRight) || scc.game.Window.Repeated(pixelgl.KeyRight) {
+		if scc.entityManager[0].Text.CursorPos < len(scc.entityManager[0].Text.Str_of_Text) {
+			scc.entityManager[0].Text.CursorPos++
+		}
+	}
+
+	if scc.game.Window.JustPressed(pixelgl.KeyKPEnter) {
+		println("Shift + Enter")
+		eval_function(scc, scc.entityManager[0].Text.Str_of_Text)
+	}
+	// else if scc.game.Window.JustPressed(pixelgl.KeyEnter) || scc.game.Window.Repeated(pixelgl.KeyEnter) {
+	// 	scc.entityManager[0].Text.Text.WriteRune('\n')
+	// 	scc.entityManager[0].Text.Str_of_Text += string('\n')
+	// }
+	// else if scc.game.Window.JustPressed(pixelgl.KeyBackspace) || scc.game.Window.Repeated(pixelgl.KeyBackspace) {
+	// 	scc.entityManager[0].Text.Text.Clear()
+	// 	scc.entityManager[0].Text.Str_of_Text = scc.entityManager[0].Text.Str_of_Text[:len(scc.entityManager[0].Text.Str_of_Text)-1]
+	// 	scc.entityManager[0].Text.Text.WriteString(scc.entityManager[0].Text.Str_of_Text)
+	// }
+	// if scc.game.Window.JustPressed(pixelgl.KeyBackspace) || scc.game.Window.Repeated(pixelgl.KeyBackspace) {
+	// 	if scc.entityManager[0].Text.CursorPos > 0 {
+	// 		// Remove the character before the cursor
+	// 		scc.entityManager[0].Text.Str_of_Text = scc.entityManager[0].Text.Str_of_Text[:scc.entityManager[0].Text.CursorPos-1] + scc.entityManager[0].Text.Str_of_Text[scc.entityManager[0].Text.CursorPos:]
+	// 		scc.entityManager[0].Text.CursorPos--
+	// 	}
+	// 	scc.entityManager[0].Text.Text.Clear()
+	// 	scc.entityManager[0].Text.Text.WriteString(scc.entityManager[0].Text.Str_of_Text)
+	// }
+
 	num_lines := len(strings.Split(strings.Trim(scc.entityManager[0].Text.Str_of_Text, "\n"), "\n"))
 	scc.entityManager[0].Text.Text.Draw(scc.game.Window, pixel.IM.Scaled(scc.entityManager[0].Text.Text.Orig.Add(pixel.V(0, float64(num_lines)*26)), 2))
 
 	scc.entityManager[1].Text.Text.Draw(scc.game.Window, pixel.IM.Scaled(scc.entityManager[1].Text.Text.Orig, 2))
 
-	println(", " + scc.entityManager[0].Text.Str_of_Text)
+	num_lines = len(strings.Split(scc.entityManager[0].Text.Str_of_Text, "\n"))
+	x, y, sprite := drawCursor(scc.game.Window, scc.entityManager[0].Text.Text, scc.entityManager[0].Text.CursorPos, scc.entityManager[0].Text.Str_of_Text, *scc)
+	// sprite.Draw(scc.game.Window, pixel.IM.Moved(pos.Sub(pixel.V(0, float64(num_lines)*26))))
+	sprite.Draw(scc.game.Window, pixel.IM.Moved(pixel.V(x+3, y-13)))
 
 	for _, entity := range scc.entityManager {
 		if (CBoundingBox{}) != entity.BoundingBox && (CSprite{}) != entity.Sprite {
@@ -246,6 +541,7 @@ func (scc *SceneCodingChallenge) Render() {
 		}
 
 		if (CText{}) != entity.Text {
+
 		}
 
 	}
@@ -253,6 +549,7 @@ func (scc *SceneCodingChallenge) Render() {
 
 func (scc *SceneCodingChallenge) DoAction(action Action) {
 	if action.Name == "LEFT_MOUSE" {
+
 	}
 
 	if action.Name == "ESC" {
