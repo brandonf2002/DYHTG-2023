@@ -19,5 +19,7 @@ require (
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20221017161538-93cebf72946b // indirect
 	github.com/go-gl/mathgl v1.1.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/traefik/yaegi v0.15.1 // indirect
+	github.com/yuin/gopher-lua v1.1.0 // indirect
 	golang.org/x/sys v0.7.0 // indirect
 )

@@ -5,6 +5,8 @@ import (
 
 	"github.com/gopxl/pixel"
 	"github.com/gopxl/pixel/text"
+	"github.com/traefik/yaegi/interp"
+	"github.com/traefik/yaegi/stdlib"
 )
 
 type SceneCodingChallenge struct {
@@ -12,6 +14,7 @@ type SceneCodingChallenge struct {
 	entityManager EntityManager
 	id            int
 	background    pixel.Picture
+	lets_go       *interp.Interpreter
 }
 
 func NewSceneCodingChallenge(game *Game) *SceneCodingChallenge {
@@ -25,6 +28,15 @@ func NewSceneCodingChallenge(game *Game) *SceneCodingChallenge {
 
 	term := scc.AddEntity()
 	term.Text = NewCText(display_text)
+
+	scc.lets_go = interp.New(interp.Options{})
+	scc.lets_go.Use(stdlib.Symbols)
+
+	v, err := scc.lets_go.Eval("1 + 2")
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+	fmt.Println("Result:", v)
 
 	return &scc
 }
