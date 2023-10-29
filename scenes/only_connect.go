@@ -53,26 +53,6 @@ func (sow *SceneOnlyConnect) DoAction(action Action) {
 	if action.Name == "LEFT_MOUSE" {
 		mouseX, mouseY := sow.game.Window.MousePosition().XY()
 		fmt.Printf("Mouse X: %v, Mouse Y: %v\n", mouseX, mouseY)
-		if Inside(action.Coords, sow.entityManager[0]) {
-			println("Yellow door")
-			sow.game.ChangeScene("MENU", NewSceneMainMenu(sow.game))
-			sow.game.ChangeScene("TRANSITION", NewSceneTransition(sow.game, "MENU"))
-		}
-		if Inside(action.Coords, sow.entityManager[1]) {
-			println("green door")
-			sow.game.ChangeScene("CODING", NewSceneCodingChallenge(sow.game))
-			sow.game.ChangeScene("TRANSITION", NewSceneTransition(sow.game, "CODING"))
-		}
-		if Inside(action.Coords, sow.entityManager[2]) {
-			println("red door")
-			sow.game.ChangeScene("SPIDER", NewSceneSpiders(sow.game))
-			sow.game.ChangeScene("TRANSITION", NewSceneTransition(sow.game, "SPIDER"))
-		}
-		if Inside(action.Coords, sow.entityManager[3]) {
-			println("blue door")
-			sow.game.ChangeScene("MENU", NewSceneMainMenu(sow.game))
-			sow.game.ChangeScene("TRANSITION", NewSceneTransition(sow.game, "MENU"))
-		}
 	}
 	if action.Name == "ESC" {
 		sow.game.ChangeScene("MENU", nil)
