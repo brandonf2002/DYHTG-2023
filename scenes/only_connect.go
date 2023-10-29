@@ -1,19 +1,27 @@
 package scenes
 
 import (
-	"fmt"
-
 	"github.com/gopxl/pixel"
+	"github.com/gopxl/pixel/imdraw"
 	"github.com/gopxl/pixel/text"
 	"golang.org/x/image/colornames"
 )
 
+const (
+	GroupA int = iota
+	GroupB
+	GroupC
+	GroupD
+)
+
 type SceneOnlyConnect struct {
-	game          *Game
-	entityManager EntityManager
-	id            int
-	background    pixel.Picture
-	pressedCount  int
+	game           *Game
+	entityManager  EntityManager
+	id             int
+	background     pixel.Picture
+	pressedCount   int
+	correctAnswers [][]int
+	pressed        [][]bool
 }
 
 const cellSpacing = 40 // Space between rectangles
@@ -26,10 +34,9 @@ func getTextBounds(txt *text.Text) (float64, float64) {
 }
 
 func NewSceneOnlyConnect(game *Game) *SceneOnlyConnect {
-	soc := SceneOnlyConnect{game: game, id: 0}
+	soc := SceneOnlyConnect{game: game, id: 0, pressedCount: 0}
 	soc.entityManager = make([]ComponentVector, 256)
 
-	//display_text := text.New(pixel.V(100, 500), scc.game.Assets.GetFont("basic"))
 	// Calculate starting position for the grid (top-left corner)
 	startX := (soc.game.Window.Bounds().W() - gridSize*cellWidth) / 2
 	startY := (soc.game.Window.Bounds().H() + gridSize*cellHeight) / 2
@@ -41,12 +48,16 @@ func NewSceneOnlyConnect(game *Game) *SceneOnlyConnect {
 		{"Spooky Scary Skeletons", "Casper", "Moaning Myrtle", "Myers"},
 	}
 
-	// Assume the correct answers are the first 4 for simplicity
-	correctAnswers := map[string]bool{
-		"Vorhees":      true,
-		"Beetlejuice":  true,
-		"Thriller":     true,
-		"Ghostbusters": true,
+	soc.correctAnswers = [][]int{
+		{GroupA, GroupC, GroupA, GroupD},
+		{GroupC, GroupB, GroupD, GroupB},
+		{GroupA, GroupC, GroupD, GroupD},
+		{GroupC, GroupB, GroupB, GroupA},
+	}
+
+	soc.pressed = make([][]bool, gridSize)
+	for i := 0; i < gridSize; i++ {
+		soc.pressed[i] = make([]bool, gridSize)
 	}
 
 	for i := 0; i < gridSize; i++ {
@@ -54,34 +65,14 @@ func NewSceneOnlyConnect(game *Game) *SceneOnlyConnect {
 			entity := soc.AddEntity()
 			x := startX + float64(i)*(cellWidth+cellSpacing)
 			y := startY - float64(j)*(cellHeight+cellSpacing)
-			entity.Transform = CTransform{
-				Pos: pixel.V(x, y),
-			}
-			// entity.Transform = CTransform{
-			// 	Pos: pixel.V(startX+float64(i)*cellWidth, startY-float64(j)*cellHeight),
-			// }
-			entity.Sprite = CSprite{
-				Sprite: pixel.NewSprite(nil, pixel.R(0, 0, cellWidth, cellHeight)), // Placeholder sprite, update this
-			}
-			entity.Text = CText{
-				Text:        text.New(entity.Transform.Pos.Add(pixel.V(10, -20)), soc.game.Assets.GetFont("basic")), // Adjust positioning within the cell
-				Str_of_Text: fmt.Sprintf("Cell %d,%d", i, j),
-			}
+			entity.Transform = NewCTransform(pixel.V(x, y), pixel.ZV, pixel.V(1, 1), pixel.ZV, 0, 0)
+			entity.BoundingBox = NewCBoundingBox(pixel.V(cellWidth, cellHeight))
+			entity.Sprite = NewCSprite(pixel.NewSprite(game.Assets.GetPicture("door"), pixel.R(0, 0, cellWidth, cellHeight)))
 
-			textWidth, _ := getTextBounds(entity.Text.Text)
-
-			centeredTextX := x - (cellWidth+textWidth)/3
+			centeredTextX := x - cellWidth/3
 			centeredTextY := y
-			entity.Text.Str_of_Text = answers[j][i]
-			entity.Text.Text.WriteString(entity.Text.Str_of_Text)
-			entity.ButtonState = CButtonState{
-				IsPressed: false,
-				Color:     pixel.RGB(1, 1, 1), // Default color (white)
-				Correct:   correctAnswers[entity.Text.Str_of_Text],
-			}
-
-			entity.Text.Text = text.New(pixel.V(centeredTextX, centeredTextY), soc.game.Assets.GetFont("basic"))
-			entity.Text.Text.WriteString(entity.Text.Str_of_Text)
+			entity.Text = NewCText(text.New(pixel.V(centeredTextX, centeredTextY), soc.game.Assets.GetFont("basic")))
+			entity.Text.Text.WriteString(answers[j][i])
 		}
 	}
 
@@ -102,44 +93,18 @@ func (soc *SceneOnlyConnect) Update() {
 }
 
 func (soc *SceneOnlyConnect) Render() {
-	// sprite := pixel.NewSprite(soc.background, soc.background.Bounds())
 	soc.game.Window.Clear(colornames.Midnightblue)
-	// sprite := pixel.NewSprite(soc.background, soc.background.Bounds())
+	imd := imdraw.New(nil)
 
-	// scaleX := soc.game.Window.Bounds().W() / soc.background.Bounds().W()
-	// scaleY := soc.game.Window.Bounds().H() / soc.background.Bounds().H()
-	// sprite.Draw(soc.game.Window, pixel.IM.ScaledXY(pixel.ZV, pixel.V(scaleX, scaleY)).Moved(soc.game.Window.Bounds().Center()))
-
-	for _, entity := range soc.entityManager {
-
-		// 		if (CTransform{}) != entity.Transform && (CButtonState{}) != entity.ButtonState {
-		// 			img := image.NewRGBA(image.Rect(
-		// 				int(entity.Sprite.Sprite.Frame().W()),
-		// 				int(entity.Sprite.Sprite.Frame().H()), cellWidth, cellHeight))
-		// 			col := entity.ButtonState.Color
-		// 			for y := img.Rect.Min.Y; y < img.Rect.Max.Y; y++ {
-		// 				for x := img.Rect.Min.X; x < img.Rect.Max.X; x++ {
-		// 					img.Set(int(x), int(y), col)
-		// 				}
-		// 			}
-
-		// 			fmt.Printf("Frame: %v\n", entity.Sprite.Sprite.Frame())
-
-		// 			rect := pixel.PictureDataFromImage(img)
-		// 			sprite := pixel.NewSprite(rect, rect.Bounds())
-
-		// 			// bottomLeft := entity.Transform.Pos
-		// 			// topRight := entity.Transform.Pos.Add(pixel.V(cellWidth, -cellHeight))
-
-		// 			sprite.Draw(soc.game.Window, pixel.IM.Moved(entity.Transform.Pos))
-		// 		}
-
-		if (CSprite{}) != entity.Sprite && (CButtonState{}) != entity.ButtonState {
-			matrix := pixel.IM.Moved(entity.Transform.Pos)
-			entity.Sprite.Sprite.Draw(soc.game.Window, matrix)
+	for i, entity := range soc.entityManager {
+		if i < 16 && soc.pressed[i/4][i%4] {
+			imd.Color = pixel.RGB(1, 0, 0)
+			imd.Push(entity.Transform.Pos, Add(entity.Transform.Pos, entity.BoundingBox.size))
 		}
-		if (CTransform{}) != entity.Transform && (CSprite{}) != entity.Sprite {
-			entity.Sprite.Sprite.Draw(soc.game.Window, pixel.IM.Moved(entity.Transform.Pos))
+		imd.Rectangle(5)
+		imd.Draw(soc.game.Window)
+		if (CTransform{}) != entity.Transform && (CBoundingBox{}) != entity.BoundingBox && (CSprite{}) != entity.Sprite {
+			entity.Sprite.Sprite.Draw(soc.game.Window, pixel.IM.Moved(Add(entity.Transform.Pos, entity.BoundingBox.Half())))
 		}
 		if (CText{}) != entity.Text {
 			entity.Text.Text.Draw(soc.game.Window, pixel.IM)
@@ -150,42 +115,40 @@ func (soc *SceneOnlyConnect) Render() {
 func (soc *SceneOnlyConnect) DoAction(action Action) {
 
 	if action.Name == "LEFT_MOUSE" {
-		mouseX, mouseY := soc.game.Window.MousePosition().XY()
-		for _, entity := range soc.entityManager {
-			if entity.Transform.Pos.X <= mouseX && entity.Transform.Pos.X+cellWidth >= mouseX &&
-				entity.Transform.Pos.Y-cellHeight <= mouseY && entity.Transform.Pos.Y >= mouseY {
-				if !entity.ButtonState.IsPressed {
-					entity.ButtonState.IsPressed = true
-					if entity.ButtonState.Correct {
-						soc.pressedCount++
-						entity.ButtonState.Color = pixel.RGB(0, 1, 0) // Change to green if correct
-					} else {
-						entity.ButtonState.Color = pixel.RGB(1, 0, 0) // Change to red if incorrect
+		for i, entity := range soc.entityManager {
+			if (CTransform{}) != entity.Transform && (CBoundingBox{}) != entity.BoundingBox && Inside(action.Coords, entity) {
+				if soc.pressedCount < 4 && !soc.pressed[i/4][i%4] {
+					soc.pressedCount += 1
+					soc.pressed[i/4][i%4] = true
+					if soc.pressedCount == 4 && soc.fourCorrect() {
+						entity := soc.AddEntity()
+						entity.Text = NewCText(text.New(pixel.V(300, 400), soc.game.Assets.GetFont("basic")))
+						entity.Text.Text.WriteString("Correct")
+						entity.LifeSpan = NewCLifeSpan(180)
 					}
-
-					if soc.pressedCount == 4 {
-						// Change color of all correct answers
-						for _, e := range soc.entityManager {
-							if e.ButtonState.Correct {
-								e.ButtonState.Color = pixel.RGB(0, 0, 1) // Change to blue
-							}
-						}
-					}
+				} else if soc.pressed[i/4][i%4] {
+					soc.pressedCount -= 1
+					soc.pressed[i/4][i%4] = false
 				}
 			}
 		}
 	}
-	// if action.Name == "LEFT_MOUSE" {
-	// 	mouseX, mouseY := soc.game.Window.MousePosition().XY()
-	// 	fmt.Printf("Mouse X: %v, Mouse Y: %v\n", mouseX, mouseY)
-	// 	for _, entity := range soc.entityManager {
-	// 		if entity.Transform.Pos.X <= mouseX && entity.Transform.Pos.X+cellWidth >= mouseX &&
-	// 			entity.Transform.Pos.Y-cellHeight <= mouseY && entity.Transform.Pos.Y >= mouseY {
-	// 			fmt.Printf("Clicked on: %s\n", entity.Text.Str_of_Text)
-	// 		}
-	// 	}
-	// }
 	if action.Name == "ESC" {
 		soc.game.ChangeScene("MENU", nil)
 	}
+}
+
+func (soc *SceneOnlyConnect) fourCorrect() bool {
+	group := -1
+	for i := 0; i < 4; i++ {
+		for j := 0; j < 4; j++ {
+			if soc.pressed[i][j] {
+				if group != -1 && soc.correctAnswers[i][j] != group {
+					return false
+				}
+				group = soc.correctAnswers[i][j]
+			}
+		}
+	}
+	return true
 }
