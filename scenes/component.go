@@ -29,22 +29,15 @@ func NewCTransform(pos pixel.Vec, velocity pixel.Vec, scale pixel.Vec, deltaScal
 }
 
 type CBoundingBox struct {
-	X      float64
-	Y      float64
-	Width  float64
-	Height float64
+	size pixel.Vec
 }
 
-func NewCBoundingBox(x float64, y float64, width float64, height float64) CBoundingBox {
-	return CBoundingBox{X: x, Y: y, Width: width, Height: height}
+func NewCBoundingBox(v pixel.Vec) CBoundingBox {
+	return CBoundingBox{size: v}
 }
 
-func (bb CBoundingBox) Center() pixel.Vec {
-	return pixel.V(bb.X+bb.Width/2, bb.Y+bb.Height/2)
-}
-
-func (bb CBoundingBox) Inside(v pixel.Vec) bool {
-	return bb.X <= v.X && v.X <= bb.X+bb.Width && bb.Y <= v.Y && v.Y <= bb.Y+bb.Height
+func (bb CBoundingBox) Half() pixel.Vec {
+	return pixel.V(bb.size.X/2, bb.size.Y/2)
 }
 
 type CSprite struct {
@@ -70,11 +63,26 @@ func NewCAnimation(deltaScaleX float64, deltaScaleY float64, deltaX float64, del
 }
 
 type CLifeSpan struct {
-	NumOfFrames int
+	FrameCounter int
+	NumOfFrames  int
 }
 
 func NewCLifeSpan(numOfFrames int) CLifeSpan {
-	return CLifeSpan{NumOfFrames: numOfFrames}
+	return CLifeSpan{FrameCounter: 0, NumOfFrames: numOfFrames}
+}
+
+func Inside(v pixel.Vec, cv ComponentVector) bool {
+	t := cv.Transform
+	bb := cv.BoundingBox
+	return t.Pos.X <= v.X && v.X <= t.Pos.X+bb.size.X && t.Pos.Y <= v.Y && v.Y <= t.Pos.Y+bb.size.Y
+}
+
+func Add(v pixel.Vec, u pixel.Vec) pixel.Vec {
+	return pixel.V(v.X+u.X, v.Y+u.Y)
+}
+
+func Sub(v pixel.Vec, u pixel.Vec) pixel.Vec {
+	return pixel.V(v.X-u.X, v.Y-u.Y)
 }
 
 type CText struct {

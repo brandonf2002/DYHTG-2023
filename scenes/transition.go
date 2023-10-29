@@ -9,25 +9,18 @@ type SceneTransition struct {
 	game          *Game
 	entityManager EntityManager
 	id            int
-	phase         int
+	frameCounter  int
+	nextScene     string
 }
 
-func NewSceneTransition(game *Game) *SceneTransition {
-	str := SceneTransition{game: game, id: 0}
+func NewSceneTransition(game *Game, nextScene string) *SceneTransition {
+	str := SceneTransition{game: game, id: 0, nextScene: nextScene}
 	str.entityManager = make([]ComponentVector, 64)
 
 	door := str.AddEntity()
-	// door.BoundingBox = NewCBoundingBox((str.game.Window.GetPos().X/2)-100, (str.game.Window.GetPos().Y/2)-100, 200, 200)
 	door.Sprite = NewCSprite(pixel.NewSprite(str.game.Assets.GetPicture("door"), str.game.Assets.GetPicture("door").Bounds()))
-	door.Transform = NewCTransform(game.Window.Bounds().Center(), pixel.V(-1, 0), pixel.V(1, 1), pixel.V(0.3, 0.3), 0, 0)
-	door.Animation = []CAnimation{
-		NewCAnimation(0, 0, 0, 0, 0, 0, 60),
-		NewCAnimation(30, 30, 0, 0, 0, 0, 120),
-		NewCAnimation(0, 0, 0, 0, 0, 0, 60),
-		NewCAnimation(-0.0002, 0, -0.01, 0, 0, 0, 60),
-	}
-
-	str.phase = 0
+	door.Transform = NewCTransform(game.Window.Bounds().Center(), pixel.V(0, 0), pixel.V(1, 1), pixel.V(0, 0), 0, 0)
+	door.LifeSpan = NewCLifeSpan(300)
 
 	return &str
 }
@@ -43,39 +36,43 @@ func (str *SceneTransition) GetEntityManager() EntityManager {
 }
 
 func (str *SceneTransition) Update() {
+	str.sLifespan()
 	str.sMovement()
-	// str.sAmimation()
 	str.Render()
+	str.frameCounter += 1
 }
 
 func (str *SceneTransition) sMovement() {
-	// for _, entity := range str.entityManager {
-	// if (CTransform{}) != entity.Transform {
-	str.entityManager[0].Transform.PrevPos = str.entityManager[0].Transform.Pos
-	str.entityManager[0].Transform.Pos.X += str.entityManager[0].Transform.Velocity.X
-	str.entityManager[0].Transform.Pos.Y += str.entityManager[0].Transform.Velocity.Y
-	str.entityManager[0].Transform.Scale.X += str.entityManager[0].Transform.DeltaScale.X
-	str.entityManager[0].Transform.Scale.Y += str.entityManager[0].Transform.DeltaScale.Y
-	str.entityManager[0].Transform.Angle += str.entityManager[0].Transform.DeltaAngle
-	// }
-	// }
+	for i, entity := range str.entityManager {
+		if (CTransform{}) != entity.Transform {
+			if str.frameCounter == 60 {
+				str.entityManager[i].Transform.DeltaScale.X = 0.003
+				str.entityManager[i].Transform.DeltaScale.Y = 0.003
+			} else if str.frameCounter == 180 {
+				str.entityManager[i].Transform.DeltaScale.X = 0
+				str.entityManager[i].Transform.DeltaScale.Y = 0
+			} else if str.frameCounter == 240 {
+				str.entityManager[i].Transform.DeltaScale.X = -0.002
+				str.entityManager[i].Transform.Velocity.X = -0.1
+			}
+			str.entityManager[i].Transform.PrevPos = str.entityManager[0].Transform.Pos
+			str.entityManager[i].Transform.Pos.X += str.entityManager[0].Transform.Velocity.X
+			str.entityManager[i].Transform.Pos.Y += str.entityManager[0].Transform.Velocity.Y
+			str.entityManager[i].Transform.Scale.X += str.entityManager[0].Transform.DeltaScale.X
+			str.entityManager[i].Transform.Scale.Y += str.entityManager[0].Transform.DeltaScale.Y
+			str.entityManager[i].Transform.Angle += str.entityManager[0].Transform.DeltaAngle
+		}
+	}
 }
 
-func (str *SceneTransition) sAmimation() {
-	if str.phase > 3 {
-		return
-	}
-
-	str.entityManager[0].Animation[str.phase].CurrentFrame++
-	// str.entityManager[0].Sprite.Sprite.Set(str.entityManager[0].Sprite.Sprite.Picture(), pixel.R(
-	// 	str.entityManager[0].Sprite.Sprite.Picture().Bounds().Min.X,
-	// 	str.entityManager[0].Sprite.Sprite.Picture().Bounds().Min.Y,
-	// 	str.entityManager[0].Sprite.Sprite.Picture().Bounds().Max.X+str.entityManager[0].Animation[str.phase].DeltaScaleX,
-	// 	str.entityManager[0].Sprite.Sprite.Picture().Bounds().Max.Y+str.entityManager[0].Animation[str.phase].DeltaScaleY,
-	// ))
-
-	if str.entityManager[0].Animation[str.phase].CurrentFrame >= str.entityManager[0].Animation[str.phase].NumOfFrames {
-		str.phase++
+func (str *SceneTransition) sLifespan() {
+	for i, entity := range str.entityManager {
+		if (CLifeSpan{}) != entity.LifeSpan {
+			if entity.LifeSpan.FrameCounter >= entity.LifeSpan.NumOfFrames {
+				str.game.ChangeScene(str.nextScene, nil)
+			}
+			str.entityManager[i].LifeSpan.FrameCounter += 1
+		}
 	}
 }
 
@@ -85,7 +82,7 @@ func (str *SceneTransition) Render() {
 
 	// sprite.Draw(str.game.Window, pixel.IM.ScaledXY(pixel.ZV, pixel.V(scaleX, scaleY)).Moved(str.game.Window.Bounds().Center()))
 
-	str.game.Window.Clear(colornames.Olive)
+	str.game.Window.Clear(colornames.Black)
 
 	for _, entity := range str.entityManager {
 		if (CTransform{}) != entity.Transform && (CSprite{}) != entity.Sprite {

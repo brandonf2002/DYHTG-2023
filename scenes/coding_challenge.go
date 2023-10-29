@@ -61,7 +61,7 @@ func (sow *SceneCodingChallenge) Render() {
 
 	for _, entity := range sow.entityManager {
 		if (CBoundingBox{}) != entity.BoundingBox && (CSprite{}) != entity.Sprite {
-			entity.Sprite.Sprite.Draw(sow.game.Window, pixel.IM.Moved(entity.BoundingBox.Center()))
+			entity.Sprite.Sprite.Draw(sow.game.Window, pixel.IM.Moved(entity.BoundingBox.Half()))
 		}
 
 		if (CText{}) != entity.Text {
