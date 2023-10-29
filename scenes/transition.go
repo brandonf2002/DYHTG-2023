@@ -17,9 +17,9 @@ func NewSceneTransition(game *Game) *SceneTransition {
 	str.entityManager = make([]ComponentVector, 64)
 
 	door := str.AddEntity()
-	door.BoundingBox = NewCBoundingBox((str.game.Window.GetPos().X/2)-100, (str.game.Window.GetPos().Y/2)-100, 200, 200)
+	// door.BoundingBox = NewCBoundingBox((str.game.Window.GetPos().X/2)-100, (str.game.Window.GetPos().Y/2)-100, 200, 200)
 	door.Sprite = NewCSprite(pixel.NewSprite(str.game.Assets.GetPicture("door"), str.game.Assets.GetPicture("door").Bounds()))
-	door.Transform = NewCTransform(game.Window.Bounds().Center(), pixel.V(-1, 0), pixel.V(1, 1), pixel.V(0.0003, 0.0003), 0, 0)
+	door.Transform = NewCTransform(game.Window.Bounds().Center(), pixel.V(-1, 0), pixel.V(1, 1), pixel.V(0.3, 0.3), 0, 0)
 	door.Animation = []CAnimation{
 		NewCAnimation(0, 0, 0, 0, 0, 0, 60),
 		NewCAnimation(30, 30, 0, 0, 0, 0, 120),
@@ -44,21 +44,21 @@ func (str *SceneTransition) GetEntityManager() EntityManager {
 
 func (str *SceneTransition) Update() {
 	str.sMovement()
-	str.sAmimation()
+	// str.sAmimation()
 	str.Render()
 }
 
 func (str *SceneTransition) sMovement() {
-	for _, entity := range str.entityManager {
-		if (CTransform{}) != entity.Transform {
-			entity.Transform.PrevPos = entity.Transform.Pos
-			entity.Transform.Pos.X += entity.Transform.Velocity.X
-			entity.Transform.Pos.Y += entity.Transform.Velocity.Y
-			entity.Transform.Scale.X += entity.Transform.DeltaScale.X
-			entity.Transform.Scale.Y += entity.Transform.DeltaScale.Y
-			entity.Transform.Angle += entity.Transform.DeltaAngle
-		}
-	}
+	// for _, entity := range str.entityManager {
+	// if (CTransform{}) != entity.Transform {
+	str.entityManager[0].Transform.PrevPos = str.entityManager[0].Transform.Pos
+	str.entityManager[0].Transform.Pos.X += str.entityManager[0].Transform.Velocity.X
+	str.entityManager[0].Transform.Pos.Y += str.entityManager[0].Transform.Velocity.Y
+	str.entityManager[0].Transform.Scale.X += str.entityManager[0].Transform.DeltaScale.X
+	str.entityManager[0].Transform.Scale.Y += str.entityManager[0].Transform.DeltaScale.Y
+	str.entityManager[0].Transform.Angle += str.entityManager[0].Transform.DeltaAngle
+	// }
+	// }
 }
 
 func (str *SceneTransition) sAmimation() {
@@ -88,8 +88,8 @@ func (str *SceneTransition) Render() {
 	str.game.Window.Clear(colornames.Olive)
 
 	for _, entity := range str.entityManager {
-		if (CBoundingBox{}) != entity.BoundingBox && (CSprite{}) != entity.Sprite {
-			entity.Sprite.Sprite.Draw(str.game.Window, pixel.IM.Moved(entity.Transform.Pos).ScaledXY(pixel.ZV, entity.Transform.Scale).Rotated(pixel.ZV, entity.Transform.Angle))
+		if (CTransform{}) != entity.Transform && (CSprite{}) != entity.Sprite {
+			entity.Sprite.Sprite.Draw(str.game.Window, pixel.IM.ScaledXY(pixel.ZV, entity.Transform.Scale).Rotated(pixel.ZV, entity.Transform.Angle).Moved(entity.Transform.Pos))
 		}
 	}
 }
