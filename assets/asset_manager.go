@@ -44,6 +44,8 @@ func LoadAssets() *AssetManager {
 	loadPicture("candy3", "./assets/png/candy3.png", &am)
 	loadPicture("candy4", "./assets/png/candy4.png", &am)
 	loadPicture("candy5", "./assets/png/candy5.png", &am)
+	loadPicture("redcircle", "./assets/png/redcircle.png", &am)
+	loadPicture("blocking", "./assets/png/blocking.png", &am)
 
 	// loadSound("door_squeak_1", "./assets/audio/door_squeak_1.mp3", &am)
 	// loadSound("door_squeak_2", "./assets/audio/door_squeak_2.mp3", &am)

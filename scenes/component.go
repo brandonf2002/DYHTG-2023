@@ -12,6 +12,7 @@ type ComponentVector struct {
 	Sprite      CSprite
 	Animation   []CAnimation
 	LifeSpan    CLifeSpan
+	Tag         CTag
 }
 
 type CTransform struct {
@@ -93,4 +94,12 @@ type CText struct {
 
 func NewCText(text *text.Text) CText {
 	return CText{Text: text, Str_of_Text: "", CursorPos: 0}
+}
+
+type CTag struct {
+	Tag *string
+}
+
+func NewCTag(tag *string) CTag {
+	return CTag{Tag: tag}
 }
