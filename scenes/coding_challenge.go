@@ -33,7 +33,7 @@ func NewSceneCodingChallenge(game *Game) *SceneCodingChallenge {
  *     Val int
  *     Next *ListNode
  * }
- */
+ */true
 func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
     
 }`)
@@ -62,141 +62,6 @@ You are given the heads of two sorted linked lists list1 and list2. Merge the tw
 
 	return &scc
 }
-
-// func newInterp() *interp.Interpreter {
-// 	i := interp.New(interp.Options{})
-// 	i.Use(stdlib.Symbols)
-// 	v, err := i.Eval(`
-// import (
-// 	"fmt"
-// 	"reflect"
-// )
-
-// // Definition for singly-linked list.
-// type ListNode struct {
-//     Val  int
-//     Next *ListNode
-// }
-
-// // func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
-// //     // dummy node to start the merged list
-// //     dummy := &ListNode{}
-// //     current := dummy
-
-// //     // while both lists are not empty
-// //     for list1 != nil && list2 != nil {
-// //         if list1.Val < list2.Val {
-// //             current.Next = list1
-// //             list1 = list1.Next
-// //         } else {
-// //             current.Next = list2
-// //             list2 = list2.Next
-// //         }
-// //         current = current.Next
-// //     }
-
-// //     // if list1 is not exhausted
-// //     if list1 != nil {
-// //         current.Next = list1
-// //     }
-
-// //     // if list2 is not exhausted
-// //     if list2 != nil {
-// //         current.Next = list2
-// //     }
-
-// //     return dummy.Next
-// // }
-
-// // Utility function to build a linked list from a slice.
-// func sliceToList(nums []int) *ListNode {
-// 	dummy := &ListNode{}
-// 	current := dummy
-// 	for _, num := range nums {
-// 		current.Next = &ListNode{Val: num}
-// 		current = current.Next
-// 	}
-// 	return dummy.Next
-// }
-
-// // Utility function to convert a linked list back to a slice.
-// func listToSlice(node *ListNode) []int {
-// 	var nums []int
-// 	for node != nil {
-// 		nums = append(nums, node.Val)
-// 		node = node.Next
-// 	}
-// 	return nums
-// }
-
-// func eval_tests() bool {
-// 	tests := []struct {
-// 		list1    []int
-// 		list2    []int
-// 		expected []int
-// 	}{
-// 		{
-// 			list1:    []int{1, 2, 4},
-// 			list2:    []int{1, 3, 4},
-// 			expected: []int{1, 1, 2, 3, 4, 4},
-// 		},
-// 		{
-// 			list1:    []int{},
-// 			list2:    []int{0},
-// 			expected: []int{0},
-// 		},
-// 	}
-
-// 	for _, test := range tests {
-// 		l1 := sliceToList(test.list1)
-// 		l2 := sliceToList(test.list2)
-// 		merged := mergeTwoLists(l1, l2)
-// 		result := listToSlice(merged)
-// 		if !(reflect.DeepEqual(result, test.expected)) {
-// 			return false
-// 		}
-// 	}
-// 	return true
-// }
-
-// func main() {
-// 	// Test cases
-// 	tests := []struct {
-// 		list1    []int
-// 		list2    []int
-// 		expected []int
-// 	}{
-// 		{
-// 			list1:    []int{1, 2, 4},
-// 			list2:    []int{1, 3, 4},
-// 			expected: []int{1, 1, 2, 3, 4, 4},
-// 		},
-// 		{
-// 			list1:    []int{},
-// 			list2:    []int{0},
-// 			expected: []int{0},
-// 		},
-// 	}
-
-// 	for _, test := range tests {
-// 		l1 := sliceToList(test.list1)
-// 		l2 := sliceToList(test.list2)
-// 		merged := mergeTwoLists(l1, l2)
-// 		result := listToSlice(merged)
-// 		if reflect.DeepEqual(result, test.expected) {
-// 			fmt.Println("Passed!")
-// 		} else {
-// 			fmt.Printf("Failed! Expected %v but got %v\n", test.expected, result)
-// 		}
-// 	}
-// }
-// 	`)
-// 	if err != nil {
-// 		fmt.Println("Error:", err)
-// 	}
-// 	fmt.Println("Result:", v)
-// 	return i
-// }
 
 func eval_function(scc *SceneCodingChallenge, function string) bool {
 	i := interp.New(interp.Options{})
@@ -335,17 +200,6 @@ func eval_tests() bool {
 // }
 	` + "\n\n" + function)
 
-	// v, err = i.Eval(function)
-	// v, err = i.Eval(`
-	// func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
-	// return list2
-	// }
-	// `)
-	// if err != nil {
-	// 	fmt.Println("Error:", err)
-	// }
-	// fmt.Printf("Result type 1: %v", v)
-
 	v, err = i.Eval("eval_tests()")
 	if err != nil {
 		fmt.Println("Error:", err)
@@ -427,33 +281,9 @@ func drawCursor(win *pixelgl.Window, txt *text.Text, cursorPos int, str string, 
 		}
 	}
 
-	// cursorRect := pixel.R(cursorPosX, cursorPosY, cursorPosX+2, cursorPosY+lineHeight) // 2 is the width of the cursor
-	// Calculate the width of the text up to the cursor's position
-	// subTextWidth := txt.BoundsOf(str[:cursorPos]).W() * 2
-	// lines := strings.Split(str, "\n")
-	// lineNum := 0
-	// charCount := 0
-	// for i, line := range lines {
-	// 	if charCount+len(line)+1 > cursorPos { // +1 to account for the newline character
-	// 		lineNum = i
-	// 		break
-	// 	}
-	// 	charCount += len(line) + 1
-	// }
-
-	// lineHeight := txt.LineHeight
-	// cursorPosX := txt.Orig.X + subTextWidth
-	// cursorPosY := txt.Orig.Y - float64(lineNum)*lineHeight
-
-	// Calculate the top-left and bottom-right points of the cursor rectangle
-	// topLeft := pixel.V(txt.Orig.X+subTextWidth, txt.Orig.Y)
-	// bottomRight := pixel.V(txt.Orig.X+subTextWidth+2, txt.Orig.Y+txt.LineHeight) // 2 is the cursor width, you can adjust this
-
 	cursorTexture := createCursorTexture(scc)
 	cursorSprite := pixel.NewSprite(pixel.Picture(cursorTexture), cursorTexture.Bounds())
-	// cursorPosVec := pixel.V(50+subTextWidth, txt.Orig.Y)
 	return cursorPosX, cursorPosY, cursorSprite
-	// Draw a simple cursor using a rectangle
 }
 
 func (scc *SceneCodingChallenge) Render() {
@@ -506,24 +336,6 @@ func (scc *SceneCodingChallenge) Render() {
 		println("Shift + Enter")
 		eval_function(scc, scc.entityManager[0].Text.Str_of_Text)
 	}
-	// else if scc.game.Window.JustPressed(pixelgl.KeyEnter) || scc.game.Window.Repeated(pixelgl.KeyEnter) {
-	// 	scc.entityManager[0].Text.Text.WriteRune('\n')
-	// 	scc.entityManager[0].Text.Str_of_Text += string('\n')
-	// }
-	// else if scc.game.Window.JustPressed(pixelgl.KeyBackspace) || scc.game.Window.Repeated(pixelgl.KeyBackspace) {
-	// 	scc.entityManager[0].Text.Text.Clear()
-	// 	scc.entityManager[0].Text.Str_of_Text = scc.entityManager[0].Text.Str_of_Text[:len(scc.entityManager[0].Text.Str_of_Text)-1]
-	// 	scc.entityManager[0].Text.Text.WriteString(scc.entityManager[0].Text.Str_of_Text)
-	// }
-	// if scc.game.Window.JustPressed(pixelgl.KeyBackspace) || scc.game.Window.Repeated(pixelgl.KeyBackspace) {
-	// 	if scc.entityManager[0].Text.CursorPos > 0 {
-	// 		// Remove the character before the cursor
-	// 		scc.entityManager[0].Text.Str_of_Text = scc.entityManager[0].Text.Str_of_Text[:scc.entityManager[0].Text.CursorPos-1] + scc.entityManager[0].Text.Str_of_Text[scc.entityManager[0].Text.CursorPos:]
-	// 		scc.entityManager[0].Text.CursorPos--
-	// 	}
-	// 	scc.entityManager[0].Text.Text.Clear()
-	// 	scc.entityManager[0].Text.Text.WriteString(scc.entityManager[0].Text.Str_of_Text)
-	// }
 
 	num_lines := len(strings.Split(strings.Trim(scc.entityManager[0].Text.Str_of_Text, "\n"), "\n"))
 	scc.entityManager[0].Text.Text.Draw(scc.game.Window, pixel.IM.Scaled(scc.entityManager[0].Text.Text.Orig.Add(pixel.V(0, float64(num_lines)*26)), 2))
@@ -543,7 +355,6 @@ func (scc *SceneCodingChallenge) Render() {
 		if (CText{}) != entity.Text {
 
 		}
-
 	}
 }
 
