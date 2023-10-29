@@ -90,8 +90,8 @@ func (sow *SceneOverworld) DoAction(action Action) {
 		}
 		if Inside(action.Coords, sow.entityManager[3]) {
 			println("blue door")
-			sow.game.ChangeScene("MENU", NewSceneMainMenu(sow.game))
-			sow.game.ChangeScene("TRANSITION", NewSceneTransition(sow.game, "MENU"))
+			sow.game.ChangeScene("CONNECT", NewSceneOnlyConnect(sow.game))
+			sow.game.ChangeScene("TRANSITION", NewSceneTransition(sow.game, "CONNECT"))
 		}
 	}
 	if action.Name == "ESC" {
