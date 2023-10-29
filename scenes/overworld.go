@@ -85,8 +85,8 @@ func (sow *SceneOverworld) DoAction(action Action) {
 		}
 		if Inside(action.Coords, sow.entityManager[2]) {
 			println("red door")
-			sow.game.ChangeScene("MENU", NewSceneMainMenu(sow.game))
-			sow.game.ChangeScene("TRANSITION", NewSceneTransition(sow.game, "MENU"))
+			sow.game.ChangeScene("SPIDER", NewSceneSpiders(sow.game))
+			sow.game.ChangeScene("TRANSITION", NewSceneTransition(sow.game, "SPIDER"))
 		}
 		if Inside(action.Coords, sow.entityManager[3]) {
 			println("blue door")
