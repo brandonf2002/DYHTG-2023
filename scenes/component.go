@@ -13,6 +13,7 @@ type ComponentVector struct {
 	Animation   []CAnimation
 	LifeSpan    CLifeSpan
 	Tag         CTag
+	Draggable   CDraggable
 }
 
 type CTransform struct {
@@ -102,4 +103,12 @@ type CTag struct {
 
 func NewCTag(tag *string) CTag {
 	return CTag{Tag: tag}
+}
+
+type CDraggable struct {
+	Draggable bool
+}
+
+func NewCDraggable() CDraggable {
+	return CDraggable{Draggable: true}
 }

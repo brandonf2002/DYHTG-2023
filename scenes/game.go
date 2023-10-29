@@ -65,6 +65,9 @@ func (g *Game) sUserInput() {
 	if g.Window.JustPressed(pixelgl.KeyC) {
 		scene.DoAction(NewAction("C", pixel.ZV))
 	}
+	if g.Window.JustReleased(pixelgl.MouseButtonLeft) {
+		scene.DoAction(NewAction("LEFT_MOUSE_RELEASED", g.Window.MousePosition()))
+	}
 }
 
 func (g *Game) ChangeScene(name string, scene Scene) {
