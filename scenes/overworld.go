@@ -40,8 +40,8 @@ func (sow *SceneOverworld) Render() {
 	sprite.Draw(sow.game.Window, pixel.IM.ScaledXY(pixel.ZV, pixel.V(scaleX, scaleY)).Moved(sow.game.Window.Bounds().Center()))
 
 	for _, entity := range sow.entityManager {
-		if (CBoundingBox{}) != entity.BoundingBox && (CSprite{}) != entity.Sprite {
-			entity.Sprite.Sprite.Draw(sow.game.Window, pixel.IM.Moved(entity.BoundingBox.Center()))
+		if (CTransform{}) != entity.Transform && (CSprite{}) != entity.Sprite {
+			entity.Sprite.Sprite.Draw(sow.game.Window, pixel.IM.Moved(entity.Transform.Pos))
 		}
 	}
 }

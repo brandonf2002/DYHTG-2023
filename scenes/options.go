@@ -40,8 +40,8 @@ func (sop *SceneOptions) Render() {
 	sprite.Draw(sop.game.Window, pixel.IM.ScaledXY(pixel.ZV, pixel.V(scaleX, scaleY)).Moved(sop.game.Window.Bounds().Center()))
 
 	for _, entity := range sop.entityManager {
-		if (CBoundingBox{}) != entity.BoundingBox && (CSprite{}) != entity.Sprite {
-			entity.Sprite.Sprite.Draw(sop.game.Window, pixel.IM.Moved(entity.BoundingBox.Center()))
+		if (CTransform{}) != entity.Transform && (CSprite{}) != entity.Sprite {
+			entity.Sprite.Sprite.Draw(sop.game.Window, pixel.IM.Moved(entity.Transform.Pos))
 		}
 	}
 }
