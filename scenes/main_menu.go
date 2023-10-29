@@ -64,7 +64,7 @@ func (smm *SceneMainMenu) DoAction(action Action) {
 			smm.game.ChangeScene("OVERWORLD", NewSceneOverworld(smm.game))
 		}
 		if smm.entityManager[1].BoundingBox.Inside(action.Coords) {
-			smm.game.ChangeScene("TRANISTINO", NewSceneTransition(smm.game))
+			smm.game.ChangeScene("OPTIONS", NewSceneCodingChallenge(smm.game))
 		}
 		if smm.entityManager[2].BoundingBox.Inside(action.Coords) {
 			smm.game.Quit()

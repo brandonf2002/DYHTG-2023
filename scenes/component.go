@@ -1,8 +1,12 @@
 package scenes
 
-import "github.com/gopxl/pixel"
+import (
+	"github.com/gopxl/pixel"
+	"github.com/gopxl/pixel/text"
+)
 
 type ComponentVector struct {
+	Text        CText
 	Transform   CTransform
 	BoundingBox CBoundingBox
 	Sprite      CSprite
@@ -71,4 +75,12 @@ type CLifeSpan struct {
 
 func NewCLifeSpan(numOfFrames int) CLifeSpan {
 	return CLifeSpan{NumOfFrames: numOfFrames}
+}
+
+type CText struct {
+	Text *text.Text
+}
+
+func NewCText(text *text.Text) CText {
+	return CText{Text: text}
 }

@@ -6,24 +6,31 @@ import (
 	"io"
 	"os"
 	"time"
+	"unicode"
 
 	"math/rand"
 	"strconv"
 
+	"github.com/golang/freetype/truetype"
 	"github.com/gopxl/pixel"
+	"github.com/gopxl/pixel/text"
 	"github.com/hajimehoshi/go-mp3"
 	"github.com/hajimehoshi/oto/v2"
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/gofont/goregular"
 )
 
 type AssetManager struct {
 	pictureMap map[string]pixel.Picture
 	soundMap   map[string]oto.Player
+	fontMap    map[string](*text.Atlas)
 }
 
 func LoadAssets() *AssetManager {
 	pictureMap := make(map[string]pixel.Picture)
 	soundMap := make(map[string]oto.Player)
-	am := AssetManager{pictureMap: pictureMap, soundMap: soundMap}
+	fontMap := make(map[string](*text.Atlas))
+	am := AssetManager{pictureMap: pictureMap, soundMap: soundMap, fontMap: fontMap}
 	loadPicture("menu_background", "./assets/png/menu_background.png", &am)
 	loadPicture("main_menu", "./assets/png/main_menu.png", &am)
 	loadPicture("overworld", "./assets/png/overworld.png", &am)
@@ -32,7 +39,25 @@ func LoadAssets() *AssetManager {
 	// loadSound("door_squeak_1", "./assets/audio/door_squeak_1.mp3", &am)
 	// loadSound("door_squeak_2", "./assets/audio/door_squeak_2.mp3", &am)
 	// loadSound("door_squeak_3", "./assets/audio/door_squeak_3.mp3", &am)
+
+	basic_font := text.NewAtlas(
+		ttfFromBytesMust(goregular.TTF, 42),
+		text.ASCII, text.RangeTable(unicode.Latin),
+	)
+
+	am.fontMap["basic"] = basic_font
 	return &am
+}
+
+func ttfFromBytesMust(b []byte, size float64) font.Face {
+	ttf, err := truetype.Parse(b)
+	if err != nil {
+		panic(err)
+	}
+	return truetype.NewFace(ttf, &truetype.Options{
+		Size:              size,
+		GlyphCacheEntries: 1,
+	})
 }
 
 func loadPicture(name string, path string, am *AssetManager) {
@@ -51,6 +76,10 @@ func loadPicture(name string, path string, am *AssetManager) {
 
 func (am *AssetManager) GetPicture(name string) pixel.Picture {
 	return am.pictureMap[name]
+}
+
+func (am *AssetManager) GetFont(name string) *text.Atlas {
+	return am.fontMap[name]
 }
 
 func loadSound(name string, path string, am *AssetManager) {
