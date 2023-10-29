@@ -6,7 +6,6 @@ import (
 	"io"
 	"os"
 	"time"
-	"unicode"
 
 	"math/rand"
 	"strconv"
@@ -17,7 +16,7 @@ import (
 	"github.com/hajimehoshi/go-mp3"
 	"github.com/hajimehoshi/oto/v2"
 	"golang.org/x/image/font"
-	"golang.org/x/image/font/gofont/goregular"
+	"golang.org/x/image/font/basicfont"
 )
 
 type AssetManager struct {
@@ -51,8 +50,9 @@ func LoadAssets() *AssetManager {
 	// loadSound("door_squeak_3", "./assets/audio/door_squeak_3.mp3", &am)
 
 	basic_font := text.NewAtlas(
-		ttfFromBytesMust(goregular.TTF, 42),
-		text.ASCII, text.RangeTable(unicode.Latin),
+		basicfont.Face7x13, text.ASCII,
+		// ttfFromBytesMust(goregular.TTF, 42),
+		// text.ASCII, text.RangeTable(unicode.Latin),
 	)
 
 	am.fontMap["basic"] = basic_font
