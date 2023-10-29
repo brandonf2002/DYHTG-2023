@@ -62,12 +62,16 @@ func (smm *SceneMainMenu) DoAction(action Action) {
 	if action.Name == "LEFT_MOUSE" {
 		if smm.entityManager[0].BoundingBox.Inside(action.Coords) {
 			smm.game.ChangeScene("OVERWORLD", NewSceneOverworld(smm.game))
+			smm.game.ChangeScene("TRANSITION", NewSceneTransition(smm.game, "OVERWORLD"))
 		}
 		if smm.entityManager[1].BoundingBox.Inside(action.Coords) {
-			smm.game.ChangeScene("TRANISTINO", NewSceneTransition(smm.game))
+			smm.game.ChangeScene("OPTIONS", NewSceneOptions(smm.game))
+			smm.game.ChangeScene("TRANSITION", NewSceneTransition(smm.game, "OPTIONS"))
 		}
 		if smm.entityManager[2].BoundingBox.Inside(action.Coords) {
 			smm.game.Quit()
 		}
+	} else if action.Name == "ESC" {
+		smm.game.Quit()
 	}
 }

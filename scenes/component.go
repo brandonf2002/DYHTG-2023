@@ -66,9 +66,10 @@ func NewCAnimation(deltaScaleX float64, deltaScaleY float64, deltaX float64, del
 }
 
 type CLifeSpan struct {
-	NumOfFrames int
+	FrameCounter int
+	NumOfFrames  int
 }
 
 func NewCLifeSpan(numOfFrames int) CLifeSpan {
-	return CLifeSpan{NumOfFrames: numOfFrames}
+	return CLifeSpan{FrameCounter: 0, NumOfFrames: numOfFrames}
 }
