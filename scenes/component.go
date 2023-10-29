@@ -3,10 +3,25 @@ package scenes
 import "github.com/gopxl/pixel"
 
 type ComponentVector struct {
+	Transform   CTransform
 	BoundingBox CBoundingBox
 	Sprite      CSprite
 	Animation   []CAnimation
 	LifeSpan    CLifeSpan
+}
+
+type CTransform struct {
+	Pos        pixel.Vec
+	PrevPos    pixel.Vec
+	Velocity   pixel.Vec
+	Scale      pixel.Vec
+	DeltaScale pixel.Vec
+	Angle      float64
+	DeltaAngle float64
+}
+
+func NewCTransform(pos pixel.Vec, velocity pixel.Vec, scale pixel.Vec, deltaScale pixel.Vec, angle float64, deltaAngle float64) CTransform {
+	return CTransform{Pos: pos, PrevPos: pos, Velocity: velocity, Scale: scale, DeltaScale: deltaScale, Angle: angle, DeltaAngle: deltaAngle}
 }
 
 type CBoundingBox struct {

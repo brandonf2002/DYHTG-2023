@@ -11,7 +11,7 @@ require (
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20221017161538-93cebf72946b // indirect
 	github.com/go-gl/mathgl v1.1.0 // indirect
 	github.com/gopxl/pixel v1.0.0 // indirect
-	github.com/hajimehoshi/go-mp3 v0.3.4 // indirect
+	github.com/hajimehoshi/go-mp3 v0.3.3 // indirect
 	github.com/hajimehoshi/oto/v2 v2.4.2 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	golang.org/x/image v0.13.0 // indirect
