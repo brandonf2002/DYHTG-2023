@@ -86,9 +86,10 @@ func Sub(v pixel.Vec, u pixel.Vec) pixel.Vec {
 }
 
 type CText struct {
-	Text *text.Text
+	Text        *text.Text
+	Str_of_Text string
 }
 
 func NewCText(text *text.Text) CText {
-	return CText{Text: text}
+	return CText{Text: text, Str_of_Text: ""}
 }

@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/gopxl/pixel"
+	"github.com/gopxl/pixel/pixelgl"
 	"github.com/gopxl/pixel/text"
 	"github.com/traefik/yaegi/interp"
 	"github.com/traefik/yaegi/stdlib"
@@ -22,17 +23,12 @@ func NewSceneCodingChallenge(game *Game) *SceneCodingChallenge {
 	scc := SceneCodingChallenge{game: game, id: 0}
 	scc.entityManager = make([]ComponentVector, 64)
 
-	user_input := text.New(pixel.V(100, 750), scc.game.Assets.GetFont("basic"))
+	user_input := text.New(pixel.V(50, 700), scc.game.Assets.GetFont("basic"))
 
 	term := scc.AddEntity()
 	term.Text = NewCText(user_input)
 
 	display_text := text.New(pixel.V(50, 800), scc.game.Assets.GetFont("basic"))
-	// fmt.Fprintln(display_text, `Merge Two Sorted Lists
-
-	// You are given the heads of two sorted linked lists list1 and list2.
-	// Merge the two lists into one sorted list. The list should be made by splicing together the nodes of the first two lists.
-	// Return the head of the merged linked list.`)
 	wrapText(display_text, `Merge Two Sorted Lists
 
 You are given the heads of two sorted linked lists list1 and list2. Merge the two lists into one sorted list. The list should be made by splicing together the nodes of the first two lists. Return the head of the merged linked list.`, 450)
@@ -230,7 +226,19 @@ func (scc *SceneCodingChallenge) Render() {
 
 	// sprite.Draw(scc.game.Window, pixel.IM.ScaledXY(pixel.ZV, pixel.V(scaleX, scaleY)).Moved(scc.game.Window.Bounds().Center()))
 
+	char := scc.game.Window.Typed()
 	scc.entityManager[0].Text.Text.WriteString(scc.game.Window.Typed())
+	scc.entityManager[0].Text.Str_of_Text += char
+	if scc.game.Window.JustPressed(pixelgl.KeyEnter) || scc.game.Window.Repeated(pixelgl.KeyEnter) {
+		scc.entityManager[0].Text.Text.WriteRune('\n')
+		scc.entityManager[0].Text.Str_of_Text += string('\n')
+	}
+	num_lines := len(strings.Split(strings.Trim(scc.entityManager[0].Text.Str_of_Text, "\n"), "\n"))
+	scc.entityManager[0].Text.Text.Draw(scc.game.Window, pixel.IM.Scaled(scc.entityManager[0].Text.Text.Orig.Add(pixel.V(0, float64(num_lines)*26)), 2))
+
+	scc.entityManager[1].Text.Text.Draw(scc.game.Window, pixel.IM.Scaled(scc.entityManager[1].Text.Text.Orig, 2))
+
+	println(", " + scc.entityManager[0].Text.Str_of_Text)
 
 	for _, entity := range scc.entityManager {
 		if (CBoundingBox{}) != entity.BoundingBox && (CSprite{}) != entity.Sprite {
@@ -238,7 +246,6 @@ func (scc *SceneCodingChallenge) Render() {
 		}
 
 		if (CText{}) != entity.Text {
-			entity.Text.Text.Draw(scc.game.Window, pixel.IM.Scaled(entity.Text.Text.Orig, 2))
 		}
 
 	}
