@@ -15,67 +15,69 @@ type SceneCodingChallenge struct {
 }
 
 func NewSceneCodingChallenge(game *Game) *SceneCodingChallenge {
-	sow := SceneCodingChallenge{game: game, id: 0}
-	sow.entityManager = make([]ComponentVector, 64)
+	scc := SceneCodingChallenge{game: game, id: 0}
+	scc.entityManager = make([]ComponentVector, 64)
 
-	display_text := text.New(pixel.V(100, 500), sow.game.Assets.GetFont("basic"))
+	display_text := text.New(pixel.V(100, 500), scc.game.Assets.GetFont("basic"))
 	fmt.Fprintln(display_text, "Hello, text!")
 	fmt.Fprintln(display_text, "I support multiple lines!")
 	fmt.Fprintf(display_text, "And I'm an %s, yay!", "io.Writer")
 
-	term := sow.AddEntity()
+	term := scc.AddEntity()
 	term.Text = NewCText(display_text)
 
-	return &sow
+	return &scc
 }
 
-func (sow *SceneCodingChallenge) AddEntity() *ComponentVector {
-	sow.entityManager[sow.id] = ComponentVector{}
-	sow.id += 1
-	return &sow.entityManager[sow.id-1]
+func (scc *SceneCodingChallenge) AddEntity() *ComponentVector {
+	scc.entityManager[scc.id] = ComponentVector{}
+	scc.id += 1
+	return &scc.entityManager[scc.id-1]
 }
 
-func (sow *SceneCodingChallenge) GetEntityManager() EntityManager {
-	return sow.entityManager
+func (scc *SceneCodingChallenge) GetEntityManager() EntityManager {
+	return scc.entityManager
 }
 
-func (sow *SceneCodingChallenge) Update() {
+func (scc *SceneCodingChallenge) Update() {
 
-	sow.Render()
+	scc.Render()
 }
 
-func (sow *SceneCodingChallenge) Render() {
+func (scc *SceneCodingChallenge) Render() {
 
-	sow.game.Window.Clear(pixel.RGB(0, 0, 0))
+	scc.game.Window.Clear(pixel.RGB(0, 0, 0))
 
-	// display_text := text.New(pixel.V(100, 500), sow.game.Assets.GetFont("basic"))
+	// display_text := text.New(pixel.V(100, 500), scc.game.Assets.GetFont("basic"))
 
-	// display_text.Draw(sow.game.Window, pixel.IM)
+	// display_text.Draw(scc.game.Window, pixel.IM)
 
-	// sprite := pixel.NewSprite(sow.background, sow.background.Bounds())
+	// sprite := pixel.NewSprite(scc.background, scc.background.Bounds())
 
-	// scaleX := sow.game.Window.Bounds().W() / sow.background.Bounds().W()
-	// scaleY := sow.game.Window.Bounds().H() / sow.background.Bounds().H()
+	// scaleX := scc.game.Window.Bounds().W() / scc.background.Bounds().W()
+	// scaleY := scc.game.Window.Bounds().H() / scc.background.Bounds().H()
 
-	// sprite.Draw(sow.game.Window, pixel.IM.ScaledXY(pixel.ZV, pixel.V(scaleX, scaleY)).Moved(sow.game.Window.Bounds().Center()))
+	// sprite.Draw(scc.game.Window, pixel.IM.ScaledXY(pixel.ZV, pixel.V(scaleX, scaleY)).Moved(scc.game.Window.Bounds().Center()))
 
-	for _, entity := range sow.entityManager {
+	scc.entityManager[0].Text.Text.WriteString(scc.game.Window.Typed())
+
+	for _, entity := range scc.entityManager {
 		if (CBoundingBox{}) != entity.BoundingBox && (CSprite{}) != entity.Sprite {
-			entity.Sprite.Sprite.Draw(sow.game.Window, pixel.IM.Moved(entity.BoundingBox.Half()))
+			entity.Sprite.Sprite.Draw(scc.game.Window, pixel.IM.Moved(entity.BoundingBox.Half()))
 		}
 
 		if (CText{}) != entity.Text {
-			entity.Text.Text.Draw(sow.game.Window, pixel.IM)
+			entity.Text.Text.Draw(scc.game.Window, pixel.IM)
 		}
 
 	}
 }
 
-func (sow *SceneCodingChallenge) DoAction(action Action) {
+func (scc *SceneCodingChallenge) DoAction(action Action) {
 	if action.Name == "LEFT_MOUSE" {
 	}
 
 	if action.Name == "ESC" {
-		sow.game.ChangeScene("MENU", nil)
+		scc.game.ChangeScene("MENU", nil)
 	}
 }

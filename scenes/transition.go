@@ -20,7 +20,8 @@ func NewSceneTransition(game *Game, nextScene string) *SceneTransition {
 	door := str.AddEntity()
 	door.Sprite = NewCSprite(pixel.NewSprite(str.game.Assets.GetPicture("door"), str.game.Assets.GetPicture("door").Bounds()))
 	door.Transform = NewCTransform(game.Window.Bounds().Center(), pixel.V(0, 0), pixel.V(1, 1), pixel.V(0, 0), 0, 0)
-	door.LifeSpan = NewCLifeSpan(300)
+	// door.LifeSpan = NewCLifeSpan(300)
+	door.LifeSpan = NewCLifeSpan(30)
 
 	return &str
 }
@@ -45,15 +46,18 @@ func (str *SceneTransition) Update() {
 func (str *SceneTransition) sMovement() {
 	for i, entity := range str.entityManager {
 		if (CTransform{}) != entity.Transform {
-			if str.frameCounter == 60 {
-				str.entityManager[i].Transform.DeltaScale.X = 0.003
-				str.entityManager[i].Transform.DeltaScale.Y = 0.003
-			} else if str.frameCounter == 180 {
+			// if str.frameCounter == 60 {
+			if str.frameCounter == 6 {
+				str.entityManager[i].Transform.DeltaScale.X = 0.003 * 10
+				str.entityManager[i].Transform.DeltaScale.Y = 0.003 * 10
+				// } else if str.frameCounter == 180 {
+			} else if str.frameCounter == 18 {
 				str.entityManager[i].Transform.DeltaScale.X = 0
 				str.entityManager[i].Transform.DeltaScale.Y = 0
-			} else if str.frameCounter == 240 {
-				str.entityManager[i].Transform.DeltaScale.X = -0.002
-				str.entityManager[i].Transform.Velocity.X = -0.1
+				// } else if str.frameCounter == 240 {
+			} else if str.frameCounter == 24 {
+				str.entityManager[i].Transform.DeltaScale.X = -0.002 * 10
+				str.entityManager[i].Transform.Velocity.X = -0.1 * 10
 			}
 			str.entityManager[i].Transform.PrevPos = str.entityManager[0].Transform.Pos
 			str.entityManager[i].Transform.Pos.X += str.entityManager[0].Transform.Velocity.X
