@@ -5,22 +5,24 @@ import (
 	"image/png"
 	"io"
 	"os"
-	"path/filepath"
-	"strings"
 	"time"
-	"image/png"
 
 	"math/rand"
 	"strconv"
 
+	"github.com/golang/freetype/truetype"
 	"github.com/gopxl/pixel"
+	"github.com/gopxl/pixel/text"
 	"github.com/hajimehoshi/go-mp3"
 	"github.com/hajimehoshi/oto/v2"
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/basicfont"
 )
 
 type AssetManager struct {
 	pictureMap map[string]pixel.Picture
 	soundMap   map[string]oto.Player
+	fontMap    map[string](*text.Atlas)
 }
 
 // func LoadAssets() *AssetManager {
@@ -42,51 +44,52 @@ type AssetManager struct {
 func LoadAssets() *AssetManager {
 	pictureMap := make(map[string]pixel.Picture)
 	soundMap := make(map[string]oto.Player)
-	am := AssetManager{pictureMap: pictureMap, soundMap: soundMap}
-<<<<<<< HEAD
 
-	// Define the paths for your assets
-	assetPaths := []string{"./assets/png", "./assets/audio"}
-
-	for _, path := range assetPaths {
-		files, err := os.ReadDir(path)
-		if err != nil {
-			fmt.Println("Error reading directory:", err)
-			return nil
-		}
-
-		for _, file := range files {
-			fmt.Println("Loading", path, file.Name())
-			filename := file.Name()
-			extension := filepath.Ext(filename)
-			nameWithoutExt := strings.TrimSuffix(filename, extension)
-
-			// Load pictures
-			if path == "./assets/png" {
-				loadPicture(nameWithoutExt, filepath.Join(path, filename), &am)
-			}
-
-			// Load sounds
-			if path == "./assets/audio" {
-				// Uncomment when you're ready to load sounds
-				// loadSound(nameWithoutExt, filepath.Join(path, filename), &am)
-			}
-		}
-	}
-
-	fmt.Printf("assets: %v\n", am)
-
-=======
+	fontMap := make(map[string](*text.Atlas))
+	am := AssetManager{pictureMap: pictureMap, soundMap: soundMap, fontMap: fontMap}
 	loadPicture("menu_background", "./assets/png/menu_background.png", &am)
 	loadPicture("main_menu", "./assets/png/main_menu.png", &am)
 	loadPicture("overworld", "./assets/png/overworld.png", &am)
-	loadPicture("transition", "./assets/png/black.png", &am)
-	loadPicture("door_1", "./assets/png/door_1.png", &am)
-	loadSound("door_squeak_1", "./assets/audio/door_squeak_1.mp3", &am)
-	loadSound("door_squeak_2", "./assets/audio/door_squeak_2.mp3", &am)
-	loadSound("door_squeak_3", "./assets/audio/door_squeak_3.mp3", &am)
->>>>>>> abd3cf5345234078ee626874108b0f41e6cf408b
+	loadPicture("door", "./assets/png/door.png", &am)
+	loadPicture("spider1", "./assets/png/spider1.png", &am)
+	loadPicture("spider2", "./assets/png/spider2.png", &am)
+	loadPicture("spider3", "./assets/png/spider3.png", &am)
+	loadPicture("spider4", "./assets/png/spider4.png", &am)
+	loadPicture("spider5", "./assets/png/spider5.png", &am)
+	loadPicture("candy1", "./assets/png/candy1.png", &am)
+	loadPicture("candy2", "./assets/png/candy2.png", &am)
+	loadPicture("candy3", "./assets/png/candy3.png", &am)
+	loadPicture("candy4", "./assets/png/candy4.png", &am)
+	loadPicture("candy5", "./assets/png/candy5.png", &am)
+	loadPicture("redcircle", "./assets/png/redcircle.png", &am)
+	loadPicture("blocking", "./assets/png/blocking.png", &am)
+	loadPicture("spooky_man", "./assets/png/spooky_man.png", &am)
+	loadPicture("spiders_background", "./assets/png/spiders_background.png", &am)
+	loadPicture("jigsaw", "./assets/png/jigsaw.png", &am)
+
+	// loadSound("door_squeak_1", "./assets/audio/door_squeak_1.mp3", &am)
+	// loadSound("door_squeak_2", "./assets/audio/door_squeak_2.mp3", &am)
+	// loadSound("door_squeak_3", "./assets/audio/door_squeak_3.mp3", &am)
+
+	basic_font := text.NewAtlas(
+		basicfont.Face7x13, text.ASCII,
+		// ttfFromBytesMust(goregular.TTF, 42),
+		// text.ASCII, text.RangeTable(unicode.Latin),
+	)
+
+	am.fontMap["basic"] = basic_font
 	return &am
+}
+
+func ttfFromBytesMust(b []byte, size float64) font.Face {
+	ttf, err := truetype.Parse(b)
+	if err != nil {
+		panic(err)
+	}
+	return truetype.NewFace(ttf, &truetype.Options{
+		Size:              size,
+		GlyphCacheEntries: 1,
+	})
 }
 
 func loadPicture(name string, path string, am *AssetManager) {
@@ -103,11 +106,16 @@ func loadPicture(name string, path string, am *AssetManager) {
 	am.pictureMap[name] = pixel.PictureDataFromImage(img)
 }
 
-func GetPicture(name string, am *AssetManager) pixel.Picture {
+func (am *AssetManager) GetPicture(name string) pixel.Picture {
 	return am.pictureMap[name]
 }
 
+func (am *AssetManager) GetFont(name string) *text.Atlas {
+	return am.fontMap[name]
+}
+
 func loadSound(name string, path string, am *AssetManager) {
+	fmt.Printf("Loading %s\n", path)
 	file, err := os.Open(path)
 	if err != nil {
 		return
@@ -131,7 +139,12 @@ func loadSound(name string, path string, am *AssetManager) {
 func GetSound(name string, am *AssetManager) oto.Player {
 	player := am.soundMap[name]
 	player.(io.Seeker).Seek(0, io.SeekStart)
+	player.Play()
+	for player.IsPlaying() {
+		time.Sleep(time.Millisecond)
+	}
 	return player
+
 }
 
 func GetRandomDoorSound(am *AssetManager) oto.Player {
