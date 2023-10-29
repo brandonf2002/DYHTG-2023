@@ -2,7 +2,6 @@ package scenes
 
 import (
 	"fmt"
-	"image"
 
 	"github.com/gopxl/pixel"
 	"github.com/gopxl/pixel/text"
@@ -113,27 +112,27 @@ func (soc *SceneOnlyConnect) Render() {
 
 	for _, entity := range soc.entityManager {
 
-		if (CTransform{}) != entity.Transform && (CButtonState{}) != entity.ButtonState {
-			img := image.NewRGBA(image.Rect(
-				int(entity.Sprite.Sprite.Frame().W()),
-				int(entity.Sprite.Sprite.Frame().H()), cellWidth, cellHeight))
-			col := entity.ButtonState.Color
-			for y := img.Rect.Min.Y; y < img.Rect.Max.Y; y++ {
-				for x := img.Rect.Min.X; x < img.Rect.Max.X; x++ {
-					img.Set(int(x), int(y), col)
-				}
-			}
+		// 		if (CTransform{}) != entity.Transform && (CButtonState{}) != entity.ButtonState {
+		// 			img := image.NewRGBA(image.Rect(
+		// 				int(entity.Sprite.Sprite.Frame().W()),
+		// 				int(entity.Sprite.Sprite.Frame().H()), cellWidth, cellHeight))
+		// 			col := entity.ButtonState.Color
+		// 			for y := img.Rect.Min.Y; y < img.Rect.Max.Y; y++ {
+		// 				for x := img.Rect.Min.X; x < img.Rect.Max.X; x++ {
+		// 					img.Set(int(x), int(y), col)
+		// 				}
+		// 			}
 
-			fmt.Printf("Frame: %v\n", entity.Sprite.Sprite.Frame())
+		// 			fmt.Printf("Frame: %v\n", entity.Sprite.Sprite.Frame())
 
-			rect := pixel.PictureDataFromImage(img)
-			sprite := pixel.NewSprite(rect, rect.Bounds())
+		// 			rect := pixel.PictureDataFromImage(img)
+		// 			sprite := pixel.NewSprite(rect, rect.Bounds())
 
-			// bottomLeft := entity.Transform.Pos
-			// topRight := entity.Transform.Pos.Add(pixel.V(cellWidth, -cellHeight))
+		// 			// bottomLeft := entity.Transform.Pos
+		// 			// topRight := entity.Transform.Pos.Add(pixel.V(cellWidth, -cellHeight))
 
-			sprite.Draw(soc.game.Window, pixel.IM.Moved(entity.Transform.Pos))
-		}
+		// 			sprite.Draw(soc.game.Window, pixel.IM.Moved(entity.Transform.Pos))
+		// 		}
 
 		if (CSprite{}) != entity.Sprite && (CButtonState{}) != entity.ButtonState {
 			matrix := pixel.IM.Moved(entity.Transform.Pos)
